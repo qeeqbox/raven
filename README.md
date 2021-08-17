@@ -1,4 +1,4 @@
-<p align="center"> <img src="https://github.com/qeeqbox/raven/blob/main/README/ravenlogo.png"></p>
+<p align="center"> <img src="https://github.com/qeeqbox/raven/blob/main/readme/ravenlogo.png"></p>
 
 Raven: An Advanced Threat Attack Map (Simplified, customizable and responsive)
 
