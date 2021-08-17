@@ -1,8 +1,6 @@
 <p align="center"> <img src="https://github.com/qeeqbox/raven/blob/main/readme/ravenlogo.png"></p>
 
-Raven: An Advanced Threat Attack Map (Simplified, customizable and responsive)
-
-Here is a demo of plotting random data into it, and using the Check IP module for internal IP lookup!
+Raven: An Advanced Threat Attack Map (Simplified, customizable, responsive and internal lookups)
 
 ## Demo
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
