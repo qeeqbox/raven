@@ -3,7 +3,7 @@
 Raven - An Advanced Threat Attack Map (Simplified, customizable and responsive). And, can be used offline in an isolated environments without interacting with external lookups!
 
 ## Live
-[https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/)
+[https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
 
 ## Demo
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
