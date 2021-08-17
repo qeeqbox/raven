@@ -76,6 +76,9 @@ raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{
 raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line'])
 ```
 
+## Timeline
+- Optimize the IP filters <- queued for testing (If you run this in an isolated environment, it should not be an issue)
+ 
 ## Resources
 - Wikipedia, naturalearthdata, d3.js, topojson, jquery, font-awesome, OSINT package, iana, geonames, AFRINIC, APNIC, ARIN, LACNIC and RIPE
 - Let me know if I missed a reference or resource!
