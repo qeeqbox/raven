@@ -11,11 +11,11 @@
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.10.3/themes/ui-lightness/jquery-ui.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="icon" href="https://qeeqbox.com/wp-content/uploads/2021/01/fac.png" sizes="192x192" />
-<script type="text/javascript" src="https://qeeqbox.github.io/raven/scripts/qb_companies_codes.js"></script>
-<script type="text/javascript" src="https://qeeqbox.github.io/raven/scripts/qb_countries_codes.js"></script>
-<script type="text/javascript" src="https://qeeqbox.github.io/raven/scripts/qb_ports_codes.js"></script>
-<script type="text/javascript" src="https://qeeqbox.github.io/raven/scripts/qb_ips_codes.js"></script>
-<script type="text/javascript" src="https://qeeqbox.github.io/raven/scripts/raven.js"></script>
+<script type="text/javascript" src="scripts/qb_companies_codes.js"></script>
+<script type="text/javascript" src="scripts/qb_countries_codes.js"></script>
+<script type="text/javascript" src="scripts/qb_ports_codes.js"></script>
+<script type="text/javascript" src="scripts/qb_ips_codes.js"></script>
+<script type="text/javascript" src="scripts/raven.js"></script>
 <style>
   body {
     background-color: #212222;
@@ -588,16 +588,25 @@
   }
 
 
-    .cell-separator-border {
-      width: 15px;
-      border-left: 1px solid #555555;
-      margin-left: 5px;
-    }
+  .cell-separator-border {
+    width: 15px;
+    border-left: 1px solid #555555;
+    margin-left: 5px;
+  }
 
-    .raven-random-panel .span-flex > *{
-      margin-right: 2px;
-    }
+  .raven-random-panel .span-flex>* {
+    margin-right: 2px;
+  }
 
+  input[type="text"]::-webkit-input-placeholder {
+    font-size: 10px;
+    line-height: 10px;
+  }
+
+  ::placeholder{
+    font-size: 10px;
+    line-height: 10px;
+  }
 </style>
 </head>
 
@@ -644,13 +653,15 @@
       <div class="span-flex">
         <input type="text" id="raven-random-text" placeholder="Attaks">
         <div class="cell-separator"></div>
-        <input type="text" id="raven-random-timeout" placeholder="Timeout (ms)">
+        <input type="text" id="raven-random-timeout" placeholder="Time (ms)">
         <div class="cell-separator"></div>
         <input type="text" id="raven-random-delay" placeholder="Delay (ms)">
         <div class="cell-separator"></div>
         <input type="button" id="raven-random-countries-button" value="Countries" />
         <div class="cell-separator"></div>
         <input type="button" id="raven-random-cities-button" value="Cities" />
+        <div class="cell-separator"></div>
+        <input type="button" id="raven-random-ips-button" value="IPs" />
         <div class="cell-separator"></div>
         <input type="button" id="raven-random-coordinates-button" value="Coordinates" />
         <div class="cell-separator-border"></div>
