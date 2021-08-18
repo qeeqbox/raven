@@ -1,6 +1,6 @@
 <p align="center"> <img src="https://github.com/qeeqbox/raven/blob/main/readme/ravenlogo.png"></p>
 
-Raven - An Advanced Cyber Threat Map (Simplified, customizable and responsive). And, can be used offline in an isolated environments **without interacting with external lookups!**
+Raven - An Advanced Cyber Threat Map (Simplified, customizable and responsive). And, can be used in an isolated environments **without interacting with external lookups!**
 
 This project uses **D3.js** not Anime.js, it has **ALL** the countries, has around **~100,000** embedded cities, can be used **offline**, does not interact with **APIs**, and colors are based on the ixora visulaiztion package.
 
