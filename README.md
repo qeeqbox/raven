@@ -2,6 +2,8 @@
 
 Raven - An Advanced Cyber Threat Map (Simplified, customizable and responsive). And, can be used offline in an isolated environments **without interacting with external lookups!**
 
+This project uses **D3.js** not Anime.js, it has **ALL** the countries and can be used **offline**
+
 ## Live - Demo
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
 
