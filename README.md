@@ -2,7 +2,7 @@
 
 Raven - An Advanced Cyber Threat Map (Simplified, customizable and responsive). And, can be used in an isolated environments **without interacting with external lookups!**
 
-This project uses **D3.js** not Anime.js, it has **ALL** the countries, has around **~100,000** embedded cities, can be used **offline**, does not interact with **APIs**, and colors are based on the ixora visulaiztion package.
+This project uses **D3.js** not Anime.js, it has **ALL** the countries, has around **~100,000** embedded cities, can be used **offline**, does not interact with **APIs**, and colors are based on the ixora visulaiztion package. 
 
 ## Live - Demo
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
@@ -87,6 +87,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 
 ## Disclaimer\Notes
 - Please spend sometime understanding how this project works before of opening issues or **leaving any sort of enquiries**
+- If you want to see other examples of worldmaps that do not have all the features listed in project (Google search -> world map dark)
 
 ## Other Projects
 [![](https://github.com/qeeqbox/.github/blob/main/data/analyzer.png)](https://github.com/qeeqbox/analyzer) [![](https://github.com/qeeqbox/.github/blob/main/data/chameleon.png)](https://github.com/qeeqbox/chameleon) [![](https://github.com/qeeqbox/.github/blob/main/data/honeypots.png)](https://github.com/qeeqbox/honeypots) [![](https://github.com/qeeqbox/.github/blob/main/data/osint.png)](https://github.com/qeeqbox/osint) [![](https://github.com/qeeqbox/.github/blob/main/data/url-sandbox.png)](https://github.com/qeeqbox/url-sandbox) [![](https://github.com/qeeqbox/.github/blob/main/data/mitre-visualizer.png)](https://github.com/qeeqbox/mitre-visualizer) [![](https://github.com/qeeqbox/.github/blob/main/data/woodpecker.png)](https://github.com/qeeqbox/woodpecker) [![](https://github.com/qeeqbox/.github/blob/main/data/docker-images.png)](https://github.com/qeeqbox/docker-images) [![](https://github.com/qeeqbox/.github/blob/main/data/seahorse.png)](https://github.com/qeeqbox/seahorse) [![](https://github.com/qeeqbox/.github/blob/main/data/rhino.png)](https://github.com/qeeqbox/rhino)
