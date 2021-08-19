@@ -1,8 +1,8 @@
 <p align="center"> <img src="https://github.com/qeeqbox/raven/blob/main/readme/ravenlogo.png"></p>
 
-Raven - An Advanced Cyber Threat Map (Simplified, customizable and responsive). And, can be used in an isolated environment **without interacting with external lookups!**
+Raven - An Advanced Cyber Threat Map (Simplified, customizable and responsive). And, it can be used in an isolated environment **without interacting with external lookups!**
 
-This project uses **D3.js** not Anime.js, it has **ALL** the countries, has around **~100,000** embedded cities, can be used **offline**, does not interact with **APIs**, and colors are based on the ixora visulaiztion package. 
+This project uses **D3.js** not Anime.js, it has **ALL** the countries and around **~100,000** embedded cities, it can be used **offline**, it does not interact with **APIs**, and colors are based on the ixora visulaiztion package. 
 
 ## Live - Demo
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
@@ -86,7 +86,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 - Let me know if I missed a reference or resource!
 
 ## Disclaimer\Notes
-- Please spend sometime understanding how this project works before opening any issues or **leaving any sort of enquiries**
+- Please spend sometime understanding how this project works before opening any issues or **leaving any sort of inquiries**
 - If you want to see other examples of worldmaps that do not have all the features listed in project (Google search -> world map dark)
 
 ## Other Projects
