@@ -86,7 +86,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 - Let me know if I missed a reference or resource!
 
 ## Disclaimer\Notes
-- Please spend sometime understanding how this project works before of opening issues or **leaving any sort of enquiries**
+- Please spend sometime understanding how this project works before opening any issues or **leaving any sort of enquiries**
 - If you want to see other examples of worldmaps that do not have all the features listed in project (Google search -> world map dark)
 
 ## Other Projects
