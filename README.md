@@ -86,6 +86,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 - Let me know if I missed a reference or resource!
 
 ## Disclaimer\Notes
+- If you need help improving your world map or cyber threat map, reach out and I might be able to help you!
 - Please spend sometime understanding how this project works before opening any issues or **leaving any sort of inquiries**
 - If you want to see other examples of worldmaps that do not have all the features listed in project (Google search -> world map dark)
 
