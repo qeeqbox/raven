@@ -4,18 +4,20 @@
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
 <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-<script src="https://unpkg.com/topojson-client@3"></script>
+<script type="text/javascript" src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.10.3/themes/ui-lightness/jquery-ui.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="icon" href="https://qeeqbox.com/wp-content/uploads/2021/01/fac.png" sizes="192x192" />
 <script type="text/javascript" src="scripts/qb_companies_codes.js"></script>
 <script type="text/javascript" src="scripts/qb_countries_codes.js"></script>
 <script type="text/javascript" src="scripts/qb_ports_codes.js"></script>
 <script type="text/javascript" src="scripts/qb_ips_codes.js"></script>
+<script type="text/javascript" src="scripts/qcities.json"></script>
+<script type="text/javascript" src="scripts/qcountries.json"></script>
 <script type="text/javascript" src="scripts/raven.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="icon" href="https://qeeqbox.com/wp-content/uploads/2021/01/fac.png" sizes="192x192" />
+
 <style>
   body {
     background-color: #212222;
@@ -683,7 +685,7 @@
   </div>
   <div id="qb-worldmap-svg"></div>
   <script>
-    raven = new qb_raven_map("#qb-worldmap-svg", null, [], ["aq"], window.innerHeight, window.innerWidth, "#4f4f4f", "#6c4242", "#ff726f", "qcountries.json", "qcities.json", 2000, 100, 10, false)
+    raven = new qb_raven_map("#qb-worldmap-svg", null, [], ["aq"], window.innerHeight, window.innerWidth, "#4f4f4f", "#6c4242", "#ff726f", 2000, 100, 10, false)
     raven.init_world()
   </script>
 </body>
