@@ -10,6 +10,11 @@ This project uses **D3.js** not Anime.js, it has **ALL** the countries and aroun
 ## Offline - Demo
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
 
+## Download Offline
+```sh
+git clone https://github.com/qeeqbox/raven && cd raven && chmod +x offline.sh && ./offline.sh
+```
+
 ## Features
 - Active threat map (Live and replay)
 - IP, country, city, and port info for each attack
@@ -89,7 +94,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 ## Disclaimer\Notes
 - The dark grey style is common in my projects (You can change that if you want)
 - If you need help improving your world map or cyber threat map, reach out and I might be able to help you!
-- Please spend sometime understanding how this project works before opening any issues or leaving any sort of inquiries or **unprofessional comments**
+- Please spend sometime understanding how this project works before opening any issues or leaving any sort of inquiries or **comments**
 - If you want to see other examples of worldmaps that **DO NOT** have all the features listed in this project (Google image search -> world map dark grey)
 
 ## Other Projects
