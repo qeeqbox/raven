@@ -7,12 +7,6 @@
 <script type="text/javascript" src="offline/topojson-client.min.js"></script>
 <script type="text/javascript" src="offline/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="offline/jquery-ui.js"></script>
-<script type="text/javascript" src="scripts/qb_companies_codes.js"></script>
-<script type="text/javascript" src="scripts/qb_countries_codes.js"></script>
-<script type="text/javascript" src="scripts/qb_ports_codes.js"></script>
-<script type="text/javascript" src="scripts/qb_ips_codes.js"></script>
-<script type="text/javascript" src="scripts/qcities.json"></script>
-<script type="text/javascript" src="scripts/qcountries.json"></script>
 <script type="text/javascript" src="scripts/raven.js"></script>
 <link rel="stylesheet" type="text/css" href="offline/jquery-ui.css">
 <link rel="icon" href="https://qeeqbox.com/wp-content/uploads/2021/01/fac.png" sizes="192x192" />
@@ -604,36 +598,57 @@
     line-height: 10px;
   }
 
-  ::placeholder{
+  ::placeholder {
     font-size: 10px;
     line-height: 10px;
   }
 
   .fa-star:before {
     font-style: normal !important;
-   content: "\2605" !important;
-}
+    content: "\2605" !important;
+    font-size: 20px !important;
+  }
 
   .fa-undo:before {
     font-style: normal !important;
-   content: "\21BA" !important;
-}
+    content: "\21BA" !important;
+  }
 
   .fa-random:before {
     font-style: normal !important;
-   content: "\21C4" !important;
-}
+    content: "\21C4" !important;
+  }
 
   .fa-pencil-square-o:before {
     font-style: normal !important;
-   content: "\270E" !important;
-}
+    content: "\270E" !important;
+  }
 
   .fa-table:before {
     font-style: normal !important;
-   content: "\2637" !important;
-}
+    content: "\2637" !important;
+  }
 
+  input[type="color"] {
+    -webkit-appearance: none;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid #555555;
+    width: 20px;
+    height: 20px;
+  }
+
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  input[type="color"]::-webkit-color-swatch {
+    border: none;
+  }
+
+  *:focus {
+    outline: none;
+  }
 
 </style>
 </head>
@@ -700,9 +715,12 @@
   <div id="taskbar-panel" class="taskbar-panel">
     <div class="taskbar-panel-body">
       <div id="reset"><i class="fa fa fa-undo" aria-hidden="true"></i></div>
+      <div id="background-color"><input type="color" id="global-background-color" value="#212222"></div>
+      <div id="country-color"><input type="color" id="global-country-color" value="#4f4f4f"></div>
       <div class="cell-separator-taskbar"></div>
       <div id="logo">
         <a href="https://github.com/qeeqbox/raven">QeeqBox - Raven</a>
+        <a href="https://github.com/qeeqbox/raven/stargazers"><i class="fa fa-star"></i></a>
       </div>
     </div>
   </div>
@@ -710,7 +728,7 @@
   </div>
   <div id="qb-worldmap-svg"></div>
   <script>
-    raven = new qb_raven_map("#qb-worldmap-svg", null, [], ["aq"], window.innerHeight, window.innerWidth, "#4f4f4f", "#6c4242", "#ff726f", 2000, 100, 10, false)
+    raven = new qb_raven_map("#qb-worldmap-svg", null, [], ["aq"], window.innerHeight, window.innerWidth, "#212222", "#4f4f4f", "#6c4242", "#ff726f", 2000, 100, 10, 'scripts', false)
     raven.init_world()
   </script>
 </body>

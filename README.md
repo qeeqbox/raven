@@ -10,11 +10,6 @@ This project uses **D3.js** not Anime.js, it has **ALL** the countries and aroun
 ## Offline - Demo
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
 
-## Download Offline
-```sh
-git clone https://github.com/qeeqbox/raven && cd raven && chmod +x offline.sh && ./offline.sh
-```
-
 ## Features
 - Active threat map (Live and replay)
 - IP, country, city, and port info for each attack
@@ -92,10 +87,10 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 - Let me know if I missed a reference or resource!
 
 ## Disclaimer\Notes
-- The dark gray style is common in my projects (You can change that if you want)
+- The dark grey style is common in my projects (You can change that if you want)
 - If you need help improving your world map or cyber threat map, reach out and I might be able to help you!
-- Please spend sometime understanding how this project works before opening any issues or leaving any sort of inquiries or **comments**
-- If you want to see other examples of worldmaps that **DO NOT** have all the features listed in this project (Google image search -> world map dark gray)
+- Please spend sometime understanding how this project works before opening any issues or leaving any sort of inquiries or **unprofessional comments**
+- If you want to see other examples of worldmaps that **DO NOT** have all the features listed in this project (Google image search -> world map dark grey)
 
 ## Other Projects
 [![](https://github.com/qeeqbox/.github/blob/main/data/analyzer.png)](https://github.com/qeeqbox/analyzer) [![](https://github.com/qeeqbox/.github/blob/main/data/chameleon.png)](https://github.com/qeeqbox/chameleon) [![](https://github.com/qeeqbox/.github/blob/main/data/honeypots.png)](https://github.com/qeeqbox/honeypots) [![](https://github.com/qeeqbox/.github/blob/main/data/osint.png)](https://github.com/qeeqbox/osint) [![](https://github.com/qeeqbox/.github/blob/main/data/url-sandbox.png)](https://github.com/qeeqbox/url-sandbox) [![](https://github.com/qeeqbox/.github/blob/main/data/mitre-visualizer.png)](https://github.com/qeeqbox/mitre-visualizer) [![](https://github.com/qeeqbox/.github/blob/main/data/woodpecker.png)](https://github.com/qeeqbox/woodpecker) [![](https://github.com/qeeqbox/.github/blob/main/data/docker-images.png)](https://github.com/qeeqbox/docker-images) [![](https://github.com/qeeqbox/.github/blob/main/data/seahorse.png)](https://github.com/qeeqbox/seahorse) [![](https://github.com/qeeqbox/.github/blob/main/data/rhino.png)](https://github.com/qeeqbox/rhino)
