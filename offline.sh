@@ -7,7 +7,7 @@ declare -a links=("https://d3js.org/d3.v5.min.js" "https://unpkg.com/topojson-cl
 for link in "${links[@]}"
 do
  echo  "Downloading " $link
-   curl -sS --create-dirs -O --output-dir offline $link > /dev/null
+   wget -P offline $link > /dev/null
 done
 
 echo "Done, open Raven interface -> index_offline.html"

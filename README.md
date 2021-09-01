@@ -2,7 +2,7 @@
 
 Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive). And, it can be used in an isolated environment **without external lookups!**
 
-This project uses **D3.js** not Anime.js, it has **ALL** the countries and around **~100,000** embedded cities, it can be used **offline**, it does not interact with **APIs**, and colors are based on the ixora visulaiztion package. 
+This project uses **D3.js** (Not Anime.js), it has **ALL** the countries (Not 174) and around **~100,000** embedded cities, it can be used **offline**, it does not interact with **APIs**, and colors are based on the ixora visualization package.
 
 ## Live - Demo
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
@@ -81,7 +81,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 ## Timeline
 - ~~Optimize the IP filters <- queued for testing (If you run this in an isolated environment, it should not be an issue)~~
 - Add Theme Picker
- 
+
 ## Resources
 - Wikipedia, naturalearthdata, d3.js, topojson, jquery, font-awesome, OSINT package, iana, geonames, AFRINIC, APNIC, ARIN, LACNIC and RIPE
 - Let me know if I missed a reference or resource!
@@ -89,7 +89,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 ## Disclaimer\Notes
 - The dark grey style is common in my projects (You can change that if you want)
 - If you need help improving your world map or cyber threat map, reach out and I might be able to help you!
-- Please spend sometime understanding how this project works before opening any issues or leaving any sort of inquiries or **comments**
+- Please spend sometime in understanding how this project works before opening any issues or leaving any sort of inquiries or **comments**
 - If you want to see other examples of worldmaps that **DO NOT** have all the features listed in this project (Google image search -> world map dark grey)
 
 ## Other Projects
