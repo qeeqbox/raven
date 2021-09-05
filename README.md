@@ -1,8 +1,6 @@
 <p align="center"> <img src="https://github.com/qeeqbox/raven/blob/main/readme/ravenlogo.png"></p>
 
-Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive). And, it can be used in an isolated environment **without external lookups!**
-
-This project uses **D3.js** (Not Anime.js), it has **ALL** the countries (Not 174) and around **~100,000** embedded cities, it can be used **offline**, it does not interact with **APIs**, and colors are based on the ixora visualization package.
+Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It uses D3.js with TOPO JSON, has 247 countries, ~100,000 cities, and can be used in an isolated environment **without external lookups!**. 
 
 ## Live - Demo
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
@@ -11,15 +9,18 @@ This project uses **D3.js** (Not Anime.js), it has **ALL** the countries (Not 17
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
 
 ## Features
+- Uses D3.js (Not Anime.js)
 - Active threat map (Live and replay)
 - IP, country, city, and port info for each attack
 - Attacks stats for countries (Only known attacks)
 - Responsive interface (Move, drag, zoom in and out)
 - Customize options for countries and cites
-- 247 countries are listed on the interface
+- 247 countries are listed on the interface (Not 174)
 - Optimized worldmap for faster rendering
 - Includes IP lookup, port information
 - Random simulation (IP, country, city)
+- Can be used online or offline (Static)
+- Theme picker module
 
 ## Functions
 #### Init the worldmap
