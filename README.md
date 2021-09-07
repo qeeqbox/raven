@@ -2,6 +2,9 @@
 
 Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It uses D3.js with TOPO JSON, has 247 countries, ~100,000 cities, and can be used in an isolated environment **without external lookups!**. 
 
+### Updates
+- Phone number module is queued for testing (This will show the country associated with the mobile phone number)
+
 ## Live - Demo
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
 
