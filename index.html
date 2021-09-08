@@ -9,7 +9,6 @@
 <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="scripts/raven.js"></script>
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="icon" href="https://qeeqbox.com/wp-content/uploads/2021/01/fac.png" sizes="192x192" />
 
 <style>
@@ -604,6 +603,46 @@
     line-height: 10px;
   }
 
+  .fa-star:before {
+    font-style: normal !important;
+    content: "\2605" !important;
+    font-size: 20px !important;
+  }
+
+  .fa-undo:before {
+    font-style: normal !important;
+    content: "\21BA" !important;
+  }
+
+  .fa-random:before {
+    font-style: normal !important;
+    content: "\21C4" !important;
+  }
+
+  .fa-pencil-square-o:before {
+    font-style: normal !important;
+    content: "\270E" !important;
+  }
+
+  .fa-sun:before {
+    font-style: normal !important;
+    content: "\2600" !important;
+  }
+
+  .fa-moon:before {
+    font-style: normal !important;
+    content: "\263D" !important;
+  }
+
+  .fa-half-moon:before {
+    font-style: normal !important;
+    content: "\274D" !important;
+  }
+
+  .fa-table:before {
+    font-style: normal !important;
+    content: "\2637" !important;
+  }
 
   input[type="color"] {
     -webkit-appearance: none;
@@ -655,10 +694,10 @@
       </div>
     </div>
   </div>
-  <div id="raven-insert-panel" class="raven-insert-panel" title="Check IP">
+  <div id="raven-insert-panel" class="raven-insert-panel" title="Check IP or Mobile">
     <div class="raven-insert-panel-body div-100">
       <div class="span-flex">
-        <input type="text" id="raven-insert-text" placeholder="IP">
+        <input type="text" id="raven-insert-text" placeholder="IP or Mobile (E.g. 0.0.0.0 or +1425..)">
         <div class="cell-separator"></div>
         <input type="button" id="raven-insert-button" value="Check" />
       </div>
@@ -689,7 +728,11 @@
   </div>
   <div id="taskbar-panel" class="taskbar-panel">
     <div class="taskbar-panel-body">
-      <div id="reset"><i class="fa fa fa-undo" aria-hidden="true"></i></div>
+      <div id="reset"><i class="fa fa-undo" aria-hidden="true"></i></div>
+      <div class="cell-separator-taskbar"></div>
+      <div id="half-moon-style"><i class="fa fa-half-moon" aria-hidden="true"></i></div>
+      <div id="moon-style"><i class="fa fa-moon" aria-hidden="true"></i></div>
+      <div id="sun-style"><i class="fa fa-sun" aria-hidden="true"></i></div>
       <div id="background-color"><input type="color" id="global-background-color" value="#212222"></div>
       <div id="country-color"><input type="color" id="global-country-color" value="#737373"></div>
       <div class="cell-separator-taskbar"></div>

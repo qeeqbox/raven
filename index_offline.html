@@ -629,6 +629,21 @@
     content: "\2637" !important;
   }
 
+  .fa-sun:before {
+    font-style: normal !important;
+    content: "\2600" !important;
+  }
+
+  .fa-moon:before {
+    font-style: normal !important;
+    content: "\263D" !important;
+  }
+
+  .fa-half-moon:before {
+    font-style: normal !important;
+    content: "\274D" !important;
+  }
+
   input[type="color"] {
     -webkit-appearance: none;
     overflow: hidden;
@@ -680,10 +695,10 @@
       </div>
     </div>
   </div>
-  <div id="raven-insert-panel" class="raven-insert-panel" title="Check IP">
+  <div id="raven-insert-panel" class="raven-insert-panel" title="Check IP or Mobile">
     <div class="raven-insert-panel-body div-100">
       <div class="span-flex">
-        <input type="text" id="raven-insert-text" placeholder="IP">
+        <input type="text" id="raven-insert-text" placeholder="IP or Mobile (E.g. 0.0.0.0 or +1425..)">
         <div class="cell-separator"></div>
         <input type="button" id="raven-insert-button" value="Check" />
       </div>
@@ -714,7 +729,11 @@
   </div>
   <div id="taskbar-panel" class="taskbar-panel">
     <div class="taskbar-panel-body">
-      <div id="reset"><i class="fa fa fa-undo" aria-hidden="true"></i></div>
+      <div id="reset"><i class="fa fa-undo" aria-hidden="true"></i></div>
+      <div class="cell-separator-taskbar"></div>
+      <div id="half-moon-style"><i class="fa fa-half-moon" aria-hidden="true"></i></div>
+      <div id="moon-style"><i class="fa fa-moon" aria-hidden="true"></i></div>
+      <div id="sun-style"><i class="fa fa-sun" aria-hidden="true"></i></div>
       <div id="background-color"><input type="color" id="global-background-color" value="#212222"></div>
       <div id="country-color"><input type="color" id="global-country-color" value="#737373"></div>
       <div class="cell-separator-taskbar"></div>
