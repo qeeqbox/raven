@@ -88,9 +88,9 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 - Let me know if I missed a reference or resource!
 
 ## Disclaimer\Notes
-- The dark grey style is common in my projects (You can change that if you want)
-- If you need help improving your world map or cyber threat map, reach out and I might be able to help you!
-- Please spend sometime in understanding how this project works before opening any issues or leaving any sort of inquiries or **comments**
+- The dark grey style is typical in my projects (You can change that if you want)
+- If you need help improving your world map or cyber threat map, reach out, and I might be able to help you!
+- Please spend some time in understanding how this project works before opening any issues or leaving any inquiries or **comments**
 - If you want to see other examples of worldmaps that **DO NOT** have all the features listed in this project (Google image search -> world map dark grey)
 
 ## Other Projects
