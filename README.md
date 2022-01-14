@@ -2,10 +2,10 @@
 
 Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It uses D3.js with TOPO JSON, has 247 countries, ~100,000 cities, and can be used in an isolated environment **without external lookups!**. 
 
-## Live - Demo
+## Live - Demo [FireFox]
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
 
-## Offline - Demo
+## Offline - Demo [FireFox]
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
 
 ## Features
