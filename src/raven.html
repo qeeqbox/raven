@@ -1,0 +1,770 @@
+<!-- qeeqbox ixora project [Do not remove!]
+
+//  -------------------------------------------------------------
+//  author        Giga
+//  project       qeeqbox/raven
+//  email         gigaqeeq@gmail.com
+//  description   raven
+//  licensee      AGPL-3.0
+//  -------------------------------------------------------------
+//  contributors list qeeqbox/raven/graphs/contributors
+//  -------------------------------------------------------------
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script type="text/javascript" src="scripts/raven.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style type="text/css">
+  body {
+    background-color: #212222;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .raven-waiting {
+    position: fixed;
+    z-index: 99999;
+    width: 100%;
+    height: 100%;
+    background: #212222;
+    opacity: 1;
+    display: none;
+  }
+
+  .raven-waiting-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: none;
+  }
+
+  .raven-waiting-msg {
+    padding-top: 10px;
+    font-family: monospace !important;
+    font-size: 10px !important;
+    color: #d0d0d0 !important;
+    display: none;
+  }
+
+  .raven-hex-spinner {
+    width: 140px;
+    height: 140px;
+    animation: raven-spinner 2s linear infinite;
+  }
+
+  .raven-worldmap-country {
+    fill: #737373;
+    stroke: #313131;
+    stroke-width: .5px;
+    stroke-linejoin: round;
+  }
+
+  .raven-worldmap-route {
+    fill: none;
+    stroke-width: 2px;
+    opacity: 1;
+    stroke-linecap: round;
+  }
+
+  .raven-worldmap-water {
+    fill: #212222;
+    stroke: #212222;
+  }
+
+  .raven-worldmap-city {
+    fill: #FFFF00;
+  }
+
+  .raven-worldmap-graticule {
+    fill: none;
+    stroke: #777;
+    stroke-width: .5px;
+    stroke-opacity: .5;
+  }
+
+  @keyframes raven-spinner {
+    0% {
+      stroke-dasharray: 0 0 300 300;
+    }
+
+    50% {
+      stroke-dasharray: 0 150 300 300;
+    }
+
+    75% {
+      stroke-dasharray: 150 150 150 150;
+    }
+
+    100% {
+      stroke-dasharray: 300 300 150 150;
+    }
+  }
+
+  .raven-output-panel {
+    display: none;
+    background: none repeat scroll 0 0 transparent !important;
+    border: none !important;
+    background-color: #383939 !important;
+    padding: 0px !important;
+    border-radius: 4px;
+    opacity: .9 !important;
+    box-shadow: 0 3px 3px rgb(0, 0, 0, 0.2);
+    width: auto !important;
+    min-width: 500px !important;
+  }
+
+  .raven-output-panel>* {
+    font-family: monospace !important;
+    font-size: 10px !important;
+    color: #d0d0d0 !important;
+  }
+
+  .raven-output-panel .ui-dialog-titlebar {
+    padding-left: 10px;
+    position: relative;
+    font-size: 1em;
+    border-radius: 4px;
+    background: #383939;
+    border: 0;
+    color: #000;
+    font-weight: normal;
+  }
+
+  .raven-output-panel .ui-dialog-titlebar-close {
+    border: 0 none;
+    background-color: transparent;
+  }
+
+  .raven-output-panel .raven-output-panel-body {
+    padding: 0 10px 5px 10px !important;
+    max-height: 210px;
+    overflow-x: hidden;
+  }
+
+  .raven-output-panel .in-a-row-flex {
+    width: 100%;
+    height: 25px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .raven-output-panel .width-100 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    display: flex;
+  }
+
+
+  #raven-output-table-wrapper {
+    display: flex;
+    flex-direction: column-reverse;
+    flex-wrap: wrap;
+  }
+
+  #raven-output-table-wrapper .country-row {
+    display: flex;
+    align-items: center;
+  }
+
+
+  #raven-output-table-wrapper .country-row:not(:first-child) {
+    border-bottom: 1px solid #444444;
+    padding-bottom: 5px;
+    padding-top: 5px;
+  }
+
+  #raven-output-table-wrapper .country-row:first-child {
+    padding-top: 5px;
+  }
+
+  #raven-output-table-wrapper .country-info {
+    width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  #raven-output-table-wrapper table {
+    color: #d0d0d0 !important;
+    font-size: 10px !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    word-wrap: break-word;
+
+  }
+
+  #raven-output-table-wrapper table td {
+    table-layout: fixed;
+  }
+
+  #raven-output-table-wrapper img {
+    width: 25px !important;
+    height: 15px !important;
+  }
+
+    #raven-output-table-wrapper .time {
+    width: 150px !important;
+    max-width: 150px !important;
+    min-width: 150px !important;
+    text-align: center;
+  }
+
+  #raven-output-table-wrapper .country-flag {
+    width: 50px !important;
+    max-width: 50px !important;
+    min-width: 50px !important;
+    text-align: center;
+  }
+
+  #raven-output-table-wrapper .action {
+    width: 20px !important;
+    max-width: 20px !important;
+    min-width: 20px !important;
+  }
+
+  .raven-top-message {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    font-family: monospace !important;
+    font-size: 12px !important;
+    line-height: 14px;
+    color: #d0d0d0 !important
+  }
+
+  .raven-top-message a {
+    text-decoration: none;
+    color: #d0d0d0 !important;
+  }
+
+  .taskbar-panel {
+    display: none;
+    background: none repeat scroll 0 0 transparent !important;
+    border: none !important;
+    background-color: #383939 !important;
+    padding: 0px !important;
+    border-radius: 0px;
+    opacity: .9 !important;
+    height: auto;
+    width: auto;
+    box-shadow: 0 3px 3px rgb(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  .taskbar-panel .ui-dialog-titlebar {
+    display: none;
+  }
+
+
+  .taskbar-panel-body {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .taskbar-panel-body div:not(.cell-separator-taskbar) {
+    color: #d0d0d0 !important;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 20px;
+    font-size: 20px;
+    width: 20px;
+    text-align: center;
+  }
+
+  .taskbar-panel-body #logo {
+    color: #d0d0d0 !important;
+    width: 170px;
+    text-align: center;
+  }
+
+  .taskbar-panel-body #logo a {
+    font-family: monospace !important;
+    font-size: 14px !important;
+    line-height: 14px;
+    text-decoration: none;
+    color: #d0d0d0 !important;
+  }
+
+  .taskbar-panel-body>div:last-child {
+    padding-right: 10px;
+  }
+
+  button,
+  input[type="text"],
+  a {
+    outline: none;
+  }
+
+  #raven-table-icon {
+    display: none;
+  }
+
+  .raven-insert-panel {
+    display: none;
+    background: none repeat scroll 0 0 transparent !important;
+    border: none !important;
+    background-color: #383939 !important;
+    padding: 0px !important;
+    border-radius: 4px;
+    opacity: .9 !important;
+    box-shadow: 0 3px 3px rgb(0, 0, 0, 0.2);
+    height: 100px;
+    width: 100px;
+  }
+
+  .raven-insert-panel>* {
+    font-family: monospace !important;
+    font-size: 10px !important;
+    color: #d0d0d0 !important;
+  }
+
+  .raven-insert-panel .ui-dialog-titlebar {
+    padding-left: 10px;
+    position: relative;
+    font-size: 1em;
+    border-radius: 4px;
+    background: #383939;
+    border: 0;
+    color: #000;
+    font-weight: normal;
+  }
+
+  .raven-insert-panel .ui-dialog-titlebar-close {
+    border: 0 none;
+    background-color: transparent;
+  }
+
+  .raven-insert-panel .raven-output-panel-body {
+    padding: 0 10px 5px 10px !important;
+    max-height: 155px;
+    overflow-x: hidden;
+  }
+
+
+  .ui-widget-header .ui-icon {
+    background-image: url(https://code.jquery.com/ui/1.10.3/themes/ui-lightness/images/ui-icons_ffffff_256x240.png) !important;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+  }
+
+  .ui-state-hover .ui-icon,
+  .ui-state-focus .ui-icon,
+  .ui-state-default .ui-icon {
+    background-image: url(https://code.jquery.com/ui/1.10.3/themes/ui-lightness/images/ui-icons_ffffff_256x240.png) !important;
+    opacity: 1;
+    filter: alpha(opacity=100);
+  }
+
+  .div-100 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .span-flex {
+    display: flex;
+    padding: 10px;
+    width: 100%
+  }
+
+  .span-flex input[type="text"] {
+    width: 100%
+  }
+
+  .cell-separator {
+    width: 15px;
+  }
+
+  input[type="text"] {
+    background-color: #2b2b2b !important;
+    -webkit-border-radius: 2px !important;
+    border-radius: 2px !important;
+    border: none;
+    padding: 3px 6px 3px 6px !important;
+    color: #d0d0d0 !important;
+    font-size: 12px;
+  }
+
+  input[type="button"] {
+    border: 0;
+    background-color: #2b2b2b;
+    box-shadow: none;
+    -webkit-border-radius: 2px !important;
+    border-radius: 2px !important;
+    color: #d0d0d0 !important;
+    border: none;
+    font-size: 12px;
+  }
+
+  .cell-separator-taskbar {
+    width: 2px;
+    margin-left: 10px;
+    background-color: #2b2b2b !important;
+  }
+
+  #raven-insert-result {
+    display: flex;
+    padding-top: 0px !important;
+    align-items: center;
+  }
+
+  #raven-insert-result>* {
+    display: flex;
+    padding-right: 15px !important;
+  }
+
+  #raven-insert-result img {
+    width: 25px !important;
+    height: 15px !important;
+  }
+
+
+  .raven-tooltip-panel {
+    display: none;
+    background: none repeat scroll 0 0 transparent !important;
+    border: none !important;
+    background-color: #383939 !important;
+    padding: 0px !important;
+    border-radius: 4px;
+    opacity: .9 !important;
+    box-shadow: 0 3px 3px rgb(0, 0, 0, 0.2);
+  }
+
+  .raven-tooltip-panel>* {
+    font-family: monospace !important;
+    font-size: 10px !important;
+    color: #d0d0d0 !important;
+  }
+
+  .raven-tooltip-panel .ui-dialog-titlebar {
+    padding-left: 10px;
+    position: relative;
+    font-size: 1em;
+    border-radius: 4px;
+    background: #383939;
+    border: 0;
+    color: #000;
+    font-weight: normal;
+  }
+
+  .raven-tooltip-panel .ui-dialog-titlebar-close {
+    border: 0 none;
+    background-color: transparent;
+  }
+
+  .raven-tooltip-panel .raven-tooltip-panel-body {
+    max-height: 210px;
+    overflow-x: hidden;
+    display: flex;
+    margin-bottom: 10px !important;
+  }
+
+  .raven-tooltip-panel .in-a-row-flex {
+    width: 100%;
+    height: 25px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .raven-tooltip-panel .targets,
+  .raven-tooltip-panel .origins {
+    padding: 10px;
+    width: 230px;
+    display: flex;
+  }
+
+  .raven-tooltip-panel .origins {
+    border-left: 1px solid #444444;
+  }
+
+  #raven-tooltip-table-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #raven-tooltip-table-wrapper .country-row {
+    display: flex;
+    align-items: center;
+  }
+
+  #raven-tooltip-table-wrapper .country-header {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    border-bottom: 1px solid #444444;
+    width: 100%
+  }
+
+  #raven-tooltip-table-wrapper .country-row:not(:last-child) {
+    border-bottom: 1px solid #444444;
+    padding-bottom: 5px;
+    padding-top: 5px;
+  }
+
+  #raven-tooltip-table-wrapper .country-row:last-child {
+    padding-top: 5px;
+  }
+
+
+  #raven-tooltip-table-wrapper table {
+    color: #d0d0d0 !important;
+    font-size: 10px !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    word-wrap: break-word;
+
+  }
+
+  #raven-output-table-wrapper table td {
+    table-layout: fixed;
+  }
+
+  #raven-tooltip-table-wrapper img {
+    width: 25px !important;
+    height: 15px !important;
+  }
+
+  #raven-tooltip-table-wrapper .country-info {
+    width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #raven-tooltip-table-wrapper .country-flag {
+    width: 50px !important;
+    max-width: 50px !important;
+    min-width: 50px !important;
+    text-align: center;
+  }
+
+  #raven-tooltip-table-wrapper .country-count {
+    width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  #raven-insert-panel .ip-info {
+    padding: 10px;
+  }
+
+  .raven-random-panel {
+    background: none repeat scroll 0 0 transparent !important;
+    border: none !important;
+    background-color: #383939 !important;
+    padding: 0px !important;
+    border-radius: 4px;
+    opacity: .9 !important;
+    box-shadow: 0 3px 3px rgb(0, 0, 0, 0.2);
+    height: 100px;
+    width: 100px;
+  }
+
+  .raven-random-panel>* {
+    font-family: monospace !important;
+    font-size: 10px !important;
+    color: #d0d0d0 !important;
+  }
+
+  .raven-random-panel .ui-dialog-titlebar {
+    padding-left: 10px;
+    position: relative;
+    font-size: 1em;
+    border-radius: 4px;
+    background: #383939;
+    border: 0;
+    color: #000;
+    font-weight: normal;
+  }
+
+  .raven-random-panel .ui-dialog-titlebar-close {
+    border: 0 none;
+    background-color: transparent;
+  }
+
+  .raven-random-button-active {
+    background-color: #555555 !important;
+  }
+
+
+  .cell-separator-border {
+    width: 15px;
+    border-left: 1px solid #555555;
+    margin-left: 5px;
+  }
+
+  .raven-random-panel .span-flex>* {
+    margin-right: 2px;
+  }
+
+  input[type="text"]::-webkit-input-placeholder {
+    font-size: 10px;
+    line-height: 10px;
+  }
+
+  ::placeholder {
+    font-size: 10px;
+    line-height: 10px;
+  }
+
+  .fa-star:before {
+    font-style: normal !important;
+    content: "\2605" !important;
+    font-size: 20px !important;
+  }
+
+  .fa-undo:before {
+    font-style: normal !important;
+    content: "\21BA" !important;
+  }
+
+  .fa-random:before {
+    font-style: normal !important;
+    content: "\21C4" !important;
+  }
+
+  .fa-pencil-square-o:before {
+    font-style: normal !important;
+    content: "\270E" !important;
+  }
+
+  .fa-table:before {
+    font-style: normal !important;
+    content: "\2637" !important;
+  }
+
+  .fa-sun:before {
+    font-style: normal !important;
+    content: "\2600" !important;
+  }
+
+  .fa-moon:before {
+    font-style: normal !important;
+    content: "\263D" !important;
+  }
+
+  .fa-half-moon:before {
+    font-style: normal !important;
+    content: "\274D" !important;
+  }
+
+  input[type="color"] {
+    -webkit-appearance: none;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid #555555;
+    width: 20px;
+    height: 20px;
+  }
+
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  input[type="color"]::-webkit-color-swatch {
+    border: none;
+  }
+
+  *:focus {
+    outline: none;
+  }
+</style>
+</head>
+<body>
+  <div class="raven-waiting" id="raven-waiting">
+    <div class="raven-waiting-box" id="raven-waiting-box">
+      <svg class="raven-hex-spinner" viewBox="0 -5 100 110">
+        <polygon stroke-width="7" stroke="#aa6400" fill-opacity="0" id="hex" points="50 1 95 25 95 75 50 99 5 75 5 25" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="raven-waiting-msg" id="raven-waiting-msg">
+      </div>
+    </div>
+  </div>
+  <div id="raven-output-panel" class="raven-output-panel" title="Live Attacks">
+    <div class="raven-output-panel-body">
+      <div id="raven-output-table-wrapper" class="width-100">
+      </div>
+    </div>
+  </div>
+  <div id="raven-tooltip-panel" class="raven-tooltip-panel" title="Attacks Stats">
+    <div class="raven-tooltip-panel-body">
+      <div id="raven-tooltip-table-wrapper" class="targets">
+      </div>
+      <div id="raven-tooltip-table-wrapper" class="origins">
+      </div>
+    </div>
+  </div>
+  <div id="raven-insert-panel" class="raven-insert-panel" title="Check IP or Mobile">
+    <div class="raven-insert-panel-body div-100">
+      <div class="span-flex">
+        <input type="text" id="raven-insert-text" placeholder="IP or Mobile (E.g. 0.0.0.0 or +1425..)">
+        <div class="cell-separator"></div>
+        <input type="button" id="raven-insert-button" value="Check" />
+      </div>
+      <div id="raven-insert-result" class="ip-info">
+      </div>
+    </div>
+  </div>
+  <div id="raven-random-panel" class="raven-insert-panel" title="Generate Random Data">
+    <div class="raven-random-panel-body div-100">
+      <div class="span-flex">
+        <input type="text" id="raven-random-text" placeholder="Attaks">
+        <div class="cell-separator"></div>
+        <input type="text" id="raven-random-timeout" placeholder="Time (ms)">
+        <div class="cell-separator"></div>
+        <input type="text" id="raven-random-delay" placeholder="Delay (ms)">
+        <div class="cell-separator"></div>
+        <input type="button" id="raven-random-countries-button" value="Countries" />
+        <div class="cell-separator"></div>
+        <input type="button" id="raven-random-cities-button" value="Cities" />
+        <div class="cell-separator"></div>
+        <input type="button" id="raven-random-ips-button" value="IPs" />
+        <div class="cell-separator"></div>
+        <input type="button" id="raven-random-coordinates-button" value="Coordinates" />
+        <div class="cell-separator-border"></div>
+        <input type="button" id="raven-random-generate-button" value="Generate" />
+      </div>
+    </div>
+  </div>
+  <div id="taskbar-panel" class="taskbar-panel">
+    <div class="taskbar-panel-body">
+      <div id="reset"><i class="fa fa-undo" aria-hidden="true"></i></div>
+      <div class="cell-separator-taskbar"></div>
+      <div id="half-moon-style"><i class="fa fa-half-moon" aria-hidden="true"></i></div>
+      <div id="moon-style"><i class="fa fa-moon" aria-hidden="true"></i></div>
+      <div id="sun-style"><i class="fa fa-sun" aria-hidden="true"></i></div>
+      <div id="background-color"><input type="color" id="global-background-color" value="#212222"></div>
+      <div id="country-color"><input type="color" id="global-country-color" value="#737373"></div>
+      <div class="cell-separator-taskbar"></div>
+      <div id="logo">
+        <a href="https://github.com/qeeqbox/raven">QeeqBox - Raven</a>
+        <a href="https://github.com/qeeqbox/raven/stargazers"><i class="fa fa-star"></i></a>
+      </div>
+    </div>
+  </div>
+  <div id="raven-worldmap-svg"></div>
+    <script>
+    var raven = new qb_raven_map("#raven-worldmap-svg")
+  </script>
+</body>
