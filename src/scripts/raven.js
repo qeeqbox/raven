@@ -190,9 +190,6 @@ class qb_raven_map {
   }
 
   async load_scripts() {
-    //Needed
-    //this.load_dynamic_script('qb_world_countries.js')
-
     await new Promise(async (resolve, reject) => {
       var loaded = []
       var dobule_check = []
