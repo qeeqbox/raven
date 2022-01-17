@@ -4,10 +4,10 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
 
 - New updates are coming!
 
-## Live - Demo [FireFox]
+## Live - Demo
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
 
-## Offline - Demo [FireFox]
+## Offline - Demo
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
 
 ## Features
@@ -25,31 +25,6 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
 - Theme picker module
 
 ## Functions
-#### Init the worldmap
-```js
-qb_raven_map()                      //raven object constructor takes the following:
-
-svg_id                              //SVG ID
-world_type                          //round or 2d
-selected_countries = []             //List of ISO_3166 alpha 2 countries that will be selected
-remove_countries = []               //List of ISO_3166 alpha 2 countries that will be removed from the map
-height                              //height of the worldmap
-width                               //width of the worldmap
-orginal_country_color               //Hex color for all countries
-clicked_country_color               //Hex color will be applied to any clickable countries
-selected_country_color              //Hex color will be applied to any selected countries
-countries_json_location             //Countries JSON file (qcountries.json)
-cities_json_location                //Cities JSON file (qcities.json)
-global_timeout                      //Global timeout for animation
-db_length                           //Size of the db that stores attack events
-global_stats_limit                  //Limit attack stats of a country
-verbose                             //Verbose output should be off unless (use only for debugging)
-
-raven = new qb_raven_map("#qb-worldmap-svg", null, [], ["aq"], window.innerHeight, window.innerWidth, "#4f4f4f", "#6c4242", "#ff726f", "qcountries.json", "qcities.json", 2000, 100, 10, true)
-
-raven.init_world()                  //Init the worldmap (The worldmap should be ready for you to use at this point)
-```
-
 #### Plotting data
 ```js
 raven.add_marker_by_name()          //Plot info by country or city name
