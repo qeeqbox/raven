@@ -2,12 +2,10 @@
 
 Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It uses D3.js with TOPO JSON, has 247 countries, ~100,000 cities, and can be used in an isolated environment **without external lookups!**. 
 
-- New updates are coming!
-
-## Live - Demo
+## Live - Demo [Firefox or Chrome]
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
 
-## Offline - Demo
+## Offline - Demo [Firefox or Chrome]
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
 
 ## Features
@@ -55,10 +53,6 @@ raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'lin
 raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line')
 raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line'])
 ```
-
-## Timeline
-- ~~Optimize the IP filters <- queued for testing (If you run this in an isolated environment, it should not be an issue)~~
-- Add Theme Picker
 
 ## Resources
 - Wikipedia, naturalearthdata, d3.js, topojson, jquery, font-awesome, OSINT package, iana, geonames, AFRINIC, APNIC, ARIN, LACNIC and RIPE
