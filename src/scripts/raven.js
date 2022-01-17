@@ -146,7 +146,7 @@ class qb_raven_map {
 
     this.delay = x => new Promise(y => setTimeout(y, x))
 
-    this.current_time = () => new Date().toJSON().replace('T',' ')
+    this.current_time = () => new Date().toJSON().replace('T', ' ')
 
     this.get_nested_value = (dict, ...args) => {
       try {
@@ -189,115 +189,61 @@ class qb_raven_map {
     }
   }
 
-  load_dynamic_script(file, full_path=false) {
-    this.spinner_on_off(true, '[!] Loading: ' + file)
-    var script = document.createElement('script');
-    if(full_path){
-      script.src = file;
-
-    }
-    else{
-      script.src = this.location + '/' + file;
-    }
-    script.type = "text/javascript";
-    script.async = false;
-    document.getElementsByTagName('head')[0].appendChild(script);
-  }
-
-  load_style_sheet(file, full_path=false){
-    this.spinner_on_off(true, '[!] Loading: ' + file)
-    var link = document.createElement('link');
-    link.setAttribute("rel", "stylesheet");
-    link.setAttribute("type", "text/css");
-    if (full_path){
-        link.setAttribute("href", full_path);
-    }
-    document.getElementsByTagName('head')[0].appendChild(link);
-  }
-
-
   async load_scripts() {
     //Needed
-    this.load_dynamic_script('qb_world_countries.js')
+    //this.load_dynamic_script('qb_world_countries.js')
 
-    !this.disable.includes('qb_companies_codes') && this.load_dynamic_script('qb_companies_codes.js');
-    !this.disable.includes('qb_countries_codes_flags') && this.load_dynamic_script('qb_countries_codes_flags.js');
-    !this.disable.includes('qb_ports_codes') && this.load_dynamic_script('qb_ports_codes.js');
-    !this.disable.includes('qb_ips_codes') && this.load_dynamic_script('qb_ips_codes.js');
-    !this.disable.includes('qb_world_cities') && this.load_dynamic_script('qb_world_cities.js');
     await new Promise(async (resolve, reject) => {
+      var loaded = []
+      var dobule_check = []
+      var good = false
+      var scripts = ['qb_world_countries','qb_companies_codes','qb_countries_codes_flags','qb_ips_codes','qb_world_cities','qb_ports_codes']
+      var filtered = scripts.filter(item => !this.disable.includes(item))
       const delay = x => new Promise(y => setTimeout(y, x))
-      var on_off = false
+      filtered.forEach((item, i) => {
+        try{
+          if (typeof(window[item]) === "undefined" && !loaded.includes(item)) {
+            this.spinner_on_off(true, '[!] Loading: ' + item)
+            $.holdReady(true);
+            $.getScript(this.location + '/' + item + '.js', function() {
+              $.holdReady(false);
+              loaded.push(item)
+            });
+          }
+        }
+        catch{
+        }
+      });
+
       while (true) {
-        if (typeof(qb_world_countries) != "qb_world_countries") {
-          on_off = true
-        }
-        else{
-          on_off = false
-        }
-        if (!this.disable.includes('qb_companies_codes')) {
-          if (typeof(qb_companies_codes) != "undefined") {
-            on_off = true
-          }
-          else{
-            on_off = false
-          }
-        } else {
-          window['qb_companies_codes'] = []
-        }
-        if (!this.disable.includes('qb_countries_codes_flags')) {
-          if (typeof(qb_countries_codes_flags) != "undefined") {
-            on_off = true
-          }
-          else{
-            on_off = false
-          }
-        } else {
-          window['qb_countries_codes_flags'] = {}
-        }
-        if (!this.disable.includes('qb_ips_codes')) {
-          if (typeof(qb_private_ips_codes) != "undefined" && typeof(qb_ips_codes) != "undefined") {
-            on_off = true
-          }
-          else{
-            on_off = false
-          }
-        } else {
-          window['qb_private_ips_codes'] = []
-          window['qb_ips_codes'] = []
-        }
-        if (!this.disable.includes('qb_ports_codes')) {
-          if (typeof(qb_ports_codes) != "undefined") {
-            on_off = true
-          }
-          else{
-            on_off = false
-          }
-        } else {
-          window['qb_ports_codes'] = []
-        }
-        if (!this.disable.includes('qb_world_cities')) {
-          if (typeof(qb_world_cities) != "undefined") {
-            on_off = true
-          }
-          else{
-            on_off = false
-          }
-        } else {
-          window['qb_world_cities'] = {}
-        }
-        if (typeof(qb_world_countries) != "undefined") {
-          on_off = true
-        }
-        else{
-          on_off = false
-        }
+        if (loaded.sort().toString() == filtered.sort().toString()){
+          filtered.forEach((item, i) => {
+            if(typeof([item]) !== "undefined"){
+              this.spinner_on_off(true, '[!] Loaded: ' + item)
+              dobule_check.push(item)
+            }
+          });
 
-        if(on_off){
-          await delay(250);
-          return resolve();
+          if (dobule_check.sort().toString() == filtered.sort().toString()){
+            if (this.disable.includes('qb_companies_codes')) {
+              window['qb_companies_codes'] = []
+            }
+            if (this.disable.includes('qb_countries_codes_flags')) {
+              window['qb_countries_codes_flags'] = {}
+            }
+            if (this.disable.includes('qb_ips_codes')) {
+              window['qb_private_ips_codes'] = []
+              window['qb_ips_codes'] = []
+            }
+            if (this.disable.includes('qb_ports_codes')) {
+              window['qb_ports_codes'] = []
+            }
+            if (this.disable.includes('qb_world_cities')) {
+              window['qb_world_cities'] = {}
+            }
+            return resolve()
+          }
         }
-
         await delay(250);
       }
     });
@@ -614,7 +560,7 @@ class qb_raven_map {
         }
         if (return_info.from_result && return_info.to_result) {
           // temp_line_name = JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
-          temp_line_name = time_temp+'-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
+          temp_line_name = time_temp + '-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
           if (!this.markers_queue.includes(temp_line_name)) {
             if (temp_colors_object.line.from === null) {
               temp_colors_object.line.from = this.random_bg_color()
@@ -656,7 +602,7 @@ class qb_raven_map {
       to: null,
       active: false,
       method: 'coordinates',
-      time:time_temp
+      time: time_temp
     }
     const temp_marker_object = {
       from: null,
@@ -691,7 +637,7 @@ class qb_raven_map {
         }
         if (return_info.from_result && return_info.to_result) {
           // temp_line_name = JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
-          temp_line_name = time_temp+'-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
+          temp_line_name = time_temp + '-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
           if (!this.markers_queue.includes(temp_line_name)) {
             if (temp_colors_object.line.from === null) {
               temp_colors_object.line.from = this.random_bg_color()
@@ -1138,19 +1084,19 @@ class qb_raven_map {
 
     $('#sun-style').on('click',
       () => {
-        this.change_color('#AE9C86','#C4E4ED')
+        this.change_color('#AE9C86', '#C4E4ED')
       }
     );
 
     $('#moon-style').on('click',
       () => {
-        this.change_color('#666666','#252525')
+        this.change_color('#666666', '#252525')
       }
     );
 
     $('#half-moon-style').on('click',
       () => {
-        this.change_color('#494949','#252525')
+        this.change_color('#494949', '#252525')
       }
     );
 
@@ -1162,7 +1108,7 @@ class qb_raven_map {
     this.disable_enable_item_taskbar(true, 'insert')
   }
 
-  change_color(country_color, background_color){
+  change_color(country_color, background_color) {
     this.orginal_country_color = country_color
     $("path[id^='raven-worldmap-country']").each(function() {
       $(this).css({
@@ -1482,7 +1428,7 @@ class qb_raven_map {
             }
           })
 
-          $('#raven-output-table-wrapper').append('<div class="country-row"><div class="time">' + attack_event.time+'</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info">' + temp_item.to.info.join('<br>') + '</div></div>')
+          $('#raven-output-table-wrapper').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info">' + temp_item.to.info.join('<br>') + '</div></div>')
 
           if (typeof attack_event.from === 'object' && attack_event.from !== null && typeof attack_event.to === 'object' && attack_event.to !== null) {
             if ('n' in attack_event.from && 'n' in attack_event.to) {
