@@ -112,7 +112,7 @@
     }
   }
 
-  .raven-output-panel {
+  .raven-multi-output-panel {
     display: none;
     background: none repeat scroll 0 0 transparent !important;
     border: none !important;
@@ -125,13 +125,13 @@
     min-width: 500px !important;
   }
 
-  .raven-output-panel>* {
+  .raven-multi-output-panel>* {
     font-family: monospace !important;
     font-size: 10px !important;
     color: #d0d0d0 !important;
   }
 
-  .raven-output-panel .ui-dialog-titlebar {
+  .raven-multi-output-panel .ui-dialog-titlebar {
     padding-left: 10px;
     position: relative;
     font-size: 1em;
@@ -142,18 +142,18 @@
     font-weight: normal;
   }
 
-  .raven-output-panel .ui-dialog-titlebar-close {
+  .raven-multi-output-panel .ui-dialog-titlebar-close {
     border: 0 none;
     background-color: transparent;
   }
 
-  .raven-output-panel .raven-output-panel-body {
+  .raven-multi-output-panel .raven-multi-output-panel-body {
     padding: 0 10px 5px 10px !important;
     max-height: 210px;
     overflow-x: hidden;
   }
 
-  .raven-output-panel .in-a-row-flex {
+  .raven-multi-output-panel .in-a-row-flex {
     width: 100%;
     height: 25px;
     display: -webkit-box;
@@ -162,7 +162,7 @@
     display: flex;
   }
 
-  .raven-output-panel .width-100 {
+  .raven-multi-output-panel .width-100 {
     padding-top: 10px;
     padding-bottom: 10px;
     width: 100%;
@@ -170,36 +170,45 @@
   }
 
 
-  #raven-output-table-wrapper {
+  .output-wrapper {
     display: flex;
     flex-direction: column-reverse;
     flex-wrap: wrap;
   }
 
-  #raven-output-table-wrapper .country-row {
+  .output-wrapper .country-row {
     display: flex;
     align-items: center;
   }
 
+  .output-wrapper .country-row > *{
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 
-  #raven-output-table-wrapper .country-row:not(:first-child) {
+  .output-wrapper .country-row:not(:first-child) {
     border-bottom: 1px solid #444444;
     padding-bottom: 5px;
     padding-top: 5px;
   }
 
-  #raven-output-table-wrapper .country-row:first-child {
+  .output-wrapper .country-row:first-child {
     padding-top: 5px;
   }
 
-  #raven-output-table-wrapper .country-info {
+  .output-wrapper .country-info {
     width: 180px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
+  .output-wrapper .country-info-full-width {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-  #raven-output-table-wrapper table {
+  .output-wrapper table {
     color: #d0d0d0 !important;
     font-size: 10px !important;
     table-layout: fixed;
@@ -209,33 +218,99 @@
 
   }
 
-  #raven-output-table-wrapper table td {
+  .output-wrapper table td {
     table-layout: fixed;
   }
 
-  #raven-output-table-wrapper img {
+  .output-wrapperpper img {
     width: 25px !important;
     height: 15px !important;
   }
 
-    #raven-output-table-wrapper .time {
+  .output-wrapper .time {
     width: 150px !important;
     max-width: 150px !important;
     min-width: 150px !important;
     text-align: center;
   }
 
-  #raven-output-table-wrapper .country-flag {
+  .output-wrapper .country-flag {
     width: 50px !important;
     max-width: 50px !important;
     min-width: 50px !important;
     text-align: center;
   }
 
-  #raven-output-table-wrapper .action {
+  .output-wrapper .action {
     width: 20px !important;
     max-width: 20px !important;
     min-width: 20px !important;
+  }
+
+  .raven-single-output-panel {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    background: none repeat scroll 0 0 transparent !important;
+    border: none !important;
+    height: 70px;
+    padding: 0px !important;
+    border-radius: 4px;
+    opacity: .9 !important;
+    width: 100% !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .raven-single-output-panel .country-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .raven-single-output-panel>* {
+    font-family: monospace !important;
+    font-size: 10px !important;
+    color: #d0d0d0 !important;
+  }
+
+  .raven-single-output-panel .ui-dialog-titlebar {
+    padding-left: 10px;
+    position: relative;
+    font-size: 1em;
+    border-radius: 4px;
+    background: #383939;
+    border: 0;
+    color: #000;
+    font-weight: normal;
+  }
+
+  .raven-single-output-panel .ui-dialog-titlebar-close {
+    border: 0 none;
+    background-color: transparent;
+  }
+
+  .raven-single-output-panel .raven-single-output-panel-body {
+    padding: 0 10px 5px 10px !important;
+    max-height: 210px;
+    overflow-x: hidden;
+  }
+
+  .raven-single-output-panel .in-a-row-flex {
+    width: 100%;
+    height: 25px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .raven-single-output-panel .width-100 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    display: flex;
   }
 
   .raven-top-message {
@@ -351,7 +426,7 @@
     background-color: transparent;
   }
 
-  .raven-insert-panel .raven-output-panel-body {
+  .raven-insert-panel .raven-multi-output-panel-body {
     padding: 0 10px 5px 10px !important;
     max-height: 155px;
     overflow-x: hidden;
@@ -536,7 +611,7 @@
 
   }
 
-  #raven-output-table-wrapper table td {
+  #output-wrapper table td {
     table-layout: fixed;
   }
 
@@ -654,6 +729,11 @@
     content: "\2637" !important;
   }
 
+  .fa-single-table:before {
+    font-style: normal !important;
+    content: "\268B" !important;
+  }
+
   .fa-sun:before {
     font-style: normal !important;
     content: "\2600" !important;
@@ -701,10 +781,14 @@
       </div>
     </div>
   </div>
-  <div id="raven-output-panel" class="raven-output-panel" title="Live Attacks">
-    <div class="raven-output-panel-body">
-      <div id="raven-output-table-wrapper" class="width-100">
+  <div id="raven-multi-output-panel" class="raven-multi-output-panel" title="Live Attacks">
+    <div class="raven-multi-output-panel-body">
+      <div id="raven-multi-output-panel-body-table" class="output-wrapper">
       </div>
+    </div>
+  </div>
+  <div id="raven-single-output-panel" class="raven-single-output-panel">
+    <div id="raven-single-output-panel-body" class="raven-single-output-panel-body output-wrapper">
     </div>
   </div>
   <div id="raven-tooltip-panel" class="raven-tooltip-panel" title="Attacks Stats">
@@ -766,5 +850,10 @@
   <div id="raven-worldmap-svg"></div>
     <script>
     var raven = new qb_raven_map("#raven-worldmap-svg")
+    const delay = x => new Promise(y => setTimeout(y, x))
+      while (raven === undefined) {
+        delay(250)
+    }
+
   </script>
 </body>

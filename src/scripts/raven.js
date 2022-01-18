@@ -14,18 +14,26 @@ class qb_raven_map {
     this.svg_id = svg_id
   }
 
-  init_all(world_type, selected_countries = [], remove_countries = [], height, width, background_color, orginal_country_color, clicked_country_color, selected_country_color, global_timeout = 2000, db_length = 1000, global_stats_limit = 10, location, panels, disable, verbose) {
-    this.world_type = world_type
-    this.selected_countries = selected_countries
-    this.remove_countries = remove_countries
-    this.height = height
-    this.width = width
-    this.orginal_background_color = background_color
-    this.orginal_country_color = orginal_country_color
-    this.backup_background_color = background_color
-    this.backup_country_color = orginal_country_color
-    this.clicked_country_color = clicked_country_color
-    this.selected_country_color = selected_country_color
+  init_all(options) {
+    this.world_type = options.world_type
+    this.selected_countries = options.selected_countries
+    this.remove_countries = options.remove_countries
+    this.height = options.height
+    this.width = options.width
+    this.orginal_background_color = options.backup_background_color
+    this.orginal_country_color = options.orginal_country_color
+    this.backup_background_color = options.backup_background_color
+    this.backup_country_color = options.orginal_country_color
+    this.clicked_country_color = options.clicked_country_color
+    this.selected_country_color = options.selected_country_color
+    this.attack_output = options.attack_output
+    this.global_timeout = options.global_timeout
+    this.global_stats_limit = options.global_stats_limit
+    this.db_length = options.db_length
+    this.location = options.location
+    this.panels = options.panels
+    this.disable = options.disable
+    this.verbose = options.verbose
     this.qb_world_countries = {}
     this.qb_world_cities = {}
     this.qb_countries_codes_flags = {}
@@ -34,16 +42,8 @@ class qb_raven_map {
     this.qb_ips_codes = []
     this.sensitivity = 75
     this.markers_queue = []
-    this.attack_output = true
-    this.global_timeout = global_timeout
-    this.global_lock = false
-    this.global_stats_limit = global_stats_limit
-    this.db_length = db_length
-    this.location = location
     this.db = []
-    this.panels = panels
-    this.disable = disable
-    this.verbose = verbose
+    this.global_lock = false
   }
 
   async init_world() {
@@ -59,7 +59,8 @@ class qb_raven_map {
 
     this.spinner_on_off(true, '[!] Init interface')
     this.setup_task_bar()
-    this.setup_raven_output_panel()
+    this.setup_raven_multi_output_panel()
+    this.setup_raven_single_output_panel()
     this.setup_raven_insert_panel()
     this.setup_raven_tooltip_panel()
     this.setup_raven_random_panel()
@@ -835,10 +836,9 @@ class qb_raven_map {
     }
   }
 
-  setup_raven_output_panel() {
-
-    if (this.panels.includes('output')) {
-      $('#raven-output-panel').dialog({
+  setup_raven_multi_output_panel() {
+    if (this.panels.includes('multi-output')) {
+      $('#raven-multi-output-panel').dialog({
         width: 500,
         maxWidth: 500,
         autoOpen: false,
@@ -852,16 +852,16 @@ class qb_raven_map {
         modal: false,
         resizable: false,
         minHeight: 'auto',
-        dialogClass: 'raven-output-panel',
+        dialogClass: 'raven-multi-output-panel',
         close: () => {
-          this.disable_enable_item_taskbar(true, 'output')
+          this.disable_enable_item_taskbar(true, 'multi-output')
         }
       })
 
       const resize_observer = new ResizeObserver(() => {
-        if ($('#raven-output-panel').dialog('isOpen') === true) {
-          if (!$('#raven-output-panel').is_partially_visible()) {
-            $('#raven-output-panel').dialog('option', 'position', {
+        if ($('#raven-multi-output-panel').dialog('isOpen') === true) {
+          if (!$('#raven-multi-output-panel').is_partially_visible()) {
+            $('#raven-multi-output-panel').dialog('option', 'position', {
               my: 'left bottom',
               at: 'left+40 bottom-40',
               of: window,
@@ -875,12 +875,43 @@ class qb_raven_map {
         }
       })
 
-      resize_observer.observe($('#raven-output-panel')[0])
+      resize_observer.observe($('#raven-multi-output-panel')[0])
     } else {
-      $('#raven-output-panel').hide()
-      this.disable_enable_item_taskbar(false, 'output')
+      $('#raven-multi-output-panel').hide()
+      this.disable_enable_item_taskbar(false, 'multi-output')
     }
+  }
 
+  setup_raven_single_output_panel() {
+    if (this.panels.includes('single-output')) {
+      $("#raven-single-output-panel").css({"display":"flex"});
+      /*
+      $("#raven-single-output-panel").css({"display":"flex"});
+      $('#raven-single-output-panel').dialog({
+        width: "100%",
+        maxWidth: 500,
+        autoOpen: false,
+        position: {
+          my: 'center bottom',
+          at: 'center bottom-100',
+          of: window
+        },
+        closeText: '',
+        autoResize: true,
+        modal: false,
+        resizable: false,
+        minHeight: 'auto',
+        dialogClass: 'raven-single-output-panel',
+        close: () => {
+          this.disable_enable_item_taskbar(true, 'single-output')
+        }
+      })
+      $(".raven-single-output-panel .ui-dialog-titlebar").hide();
+      */
+    } else {
+      $('#raven-single-output-panel').hide()
+      //this.disable_enable_item_taskbar(false, 'single-output')
+    }
   }
 
   setup_raven_insert_panel() {
@@ -1010,6 +1041,7 @@ class qb_raven_map {
   }
 
   setup_task_bar() {
+    if (this.panels.includes('taskbar')) {
     $('#taskbar-panel').dialog({
       position: {
         at: 'right top',
@@ -1025,9 +1057,9 @@ class qb_raven_map {
       dialogClass: 'taskbar-panel'
     })
 
-    $('body').on('click', '.taskbar-panel-body #output', () => {
-      $('#raven-output-panel').dialog('open')
-      this.disable_enable_item_taskbar(false, 'output')
+    $('body').on('click', '.taskbar-panel-body #multi-output', () => {
+      $('#raven-multi-output-panel').dialog('open')
+      this.disable_enable_item_taskbar(false, 'multi-output')
     })
 
     $('body').on('click', '.taskbar-panel-body #insert', () => {
@@ -1101,8 +1133,10 @@ class qb_raven_map {
     $('#global-country-color').val(this.orginal_country_color)
 
     this.disable_enable_item_taskbar(true, 'random')
-    this.disable_enable_item_taskbar(true, 'output')
+    //this.disable_enable_item_taskbar(true, 'single-output')
+    this.disable_enable_item_taskbar(true, 'multi-output')
     this.disable_enable_item_taskbar(true, 'insert')
+    }
   }
 
   change_color(country_color, background_color) {
@@ -1136,9 +1170,10 @@ class qb_raven_map {
   reset_everything() {
     this.panels.includes('insert') && $('#raven-insert-panel').dialog('close')
     this.panels.includes('insert') && $('#raven-insert-text').val('')
-    this.panels.includes('output') && $('#raven-output-table-wrapper').html('')
     this.panels.includes('insert') && $('#raven-insert-result').hide()
-    this.panels.includes('output') && $('#raven-output-panel').dialog('close')
+    this.panels.includes('multi-output') && $('#raven-multi-output-panel-body-table').html('')
+    this.panels.includes('multi-output') && $('#raven-multi-output-panel').dialog('close')
+    this.panels.includes('single-output') && $('#raven-single-output-panel-body').html('')
     this.panels.includes('random') && $('#raven-random-panel').dialog('close')
 
     $('#global-background-color').val(this.backup_background_color)
@@ -1171,8 +1206,11 @@ class qb_raven_map {
     try {
       if (add) {
         switch (name) {
-          case 'output':
-            $('.taskbar-panel-body').prepend('<div id="output" ><i class="fa fa-table" aria-hidden="true"></i></div>')
+          case 'single-output':
+            $('.taskbar-panel-body').prepend('<div id="single-output" ><i class="fa fa-single-table" aria-hidden="true"></i></div>')
+            break
+          case 'multi-output':
+            $('.taskbar-panel-body').prepend('<div id="multi-output" ><i class="fa fa-table" aria-hidden="true"></i></div>')
             break
           case 'insert':
             $('.taskbar-panel-body').prepend('<div id="insert" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>')
@@ -1368,7 +1406,7 @@ class qb_raven_map {
 
       if ('active' in attack_event) {
         if (attack_event.from_result || attack_event.to_result) {
-          const action = ' -> '
+          const action = '⮕'
           const temp_item = {
             from: {
               flag: '?',
@@ -1379,9 +1417,13 @@ class qb_raven_map {
               info: []
             }
           }
-          if ($('#raven-output-table-wrapper').children().length > 10) {
-            $('#raven-output-table-wrapper .country-row:first').remove()
+          //need to change for single
+          if (options.includes('multi-output')){
+            if ($('#raven-multi-output-panel-body-table').children().length > 10) {
+              $('#raven-multi-output-panel-body-table .country-row:first').remove()
+            }
           }
+
           ['from', 'to'].forEach((item, i) => {
             if (typeof attack_event[item] === 'object' && attack_event[item] !== null) {
               if ('f' in attack_event[item]) {
@@ -1419,13 +1461,25 @@ class qb_raven_map {
                   temp_item[item].info.push('Country: ' + attack_event[item].n)
                 }
               }
+              if ('coordinates' in attack_event[item]) {
+                if (attack_event[item].coordinates.length == 2) {
+                  temp_item[item].info.push('Latitude: ' + attack_event[item].coordinates[0])
+                  temp_item[item].info.push('Longitude: ' + attack_event[item].coordinates[1])
+                }
+              }
             } else {
               temp_item[item].flag = '?'
               temp_item[item].info.push('Unknown: ' + attack_event[item])
             }
           })
 
-          $('#raven-output-table-wrapper').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info">' + temp_item.to.info.join('<br>') + '</div></div>')
+          if (options.includes('multi-output')){
+            $('#raven-multi-output-panel-body-table').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info">' + temp_item.to.info.join('<br>') + '</div></div>')
+          }
+
+          if (options.includes('single-output')){
+            $('#raven-single-output-panel-body').html('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info-full-width">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info-full-width">' + temp_item.to.info.join('<br>') + '</div></div>')
+          }
 
           if (typeof attack_event.from === 'object' && attack_event.from !== null && typeof attack_event.to === 'object' && attack_event.to !== null) {
             if ('n' in attack_event.from && 'n' in attack_event.to) {
@@ -1447,7 +1501,7 @@ class qb_raven_map {
   }
 
   async random_data(m, timeout, delay, type_of_data) {
-    $('#raven-output-table-wrapper').html('')
+    $('#raven-multi-output-panel-body-table').html('')
     const max_len_world_cities = this.disable.includes('cities') ? 0 : Object.keys(this.qb_world_cities).length;
     const max_len_world_countries = this.qb_world_countries.length
     const type_of_data_length = type_of_data.length
@@ -1474,7 +1528,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line'])
+            }, timeout, ['line','multi-output','single-output'])
           }
         } else if (random_value === 'Cities' && !this.disable.includes('cities')) {
           const from = Object.keys(this.qb_world_cities)[Math.floor(Math.random() * max_len_world_cities)]
@@ -1492,7 +1546,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line'])
+            }, timeout, ['line','multi-output','single-output'])
           }
         } else if (random_value === 'IPs') {
           const temp_from = [Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)]
@@ -1513,7 +1567,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line'])
+            }, timeout, ['line','multi-output','single-output'])
           }
         } else if (random_value === 'Coordinates') {
           from = [Math.random() * 360 - 180, Math.random() * 360 - 180]
@@ -1531,7 +1585,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line'])
+            }, timeout, ['line','multi-output','single-output'])
           }
         }
         await this.delay(delay)
