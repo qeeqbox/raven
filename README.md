@@ -27,7 +27,7 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
   //You only need to embed this iframe in your project.
   <iframe id="raven-iframe" src="https://qeeqbox.github.io/raven/src/raven.html" frameborder="0" width="100%" height="100%" scrolling="auto"></iframe>
   
-  //Then, use need to initialize it - That's all!
+  //Then, run the initialization script with your custom settings - That's all!
   <script type="text/javascript">
 
     document.getElementById('raven-iframe').addEventListener("load", function() {
@@ -73,7 +73,7 @@ raven.add_marker_by_coordinates()   //Plot data by coordinates
 marker_object                       //An object {'from':'','to':""} see examples
 colors_object                       //An object {'line: {'from': ''#FF0000','to': 'FF0000'}} this the color of the line between 2 points - (if null, then a random color will be picked)
 timeout                             //Animation time out
-marker = []                         //A list of animation marker, use ['line'] for now
+options = []                        //A list of options such as animation marker
 
 raven.add_marker_by_name({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line'])
 raven.add_marker_by_ip({'from':'0.0.0.0','to':'0.0.0.0:53'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line')
@@ -88,7 +88,7 @@ method                              //Name, IP or coordinates
 marker_object                       //An object {'from':'','to':""} see examples
 colors_object                       //An object {'line: {'from': ''#FF0000','to': 'FF0000'}} this the color of the line between 2 points - (if null, then a random color will be picked)
 timeout                             //Animation time out
-marker = []                         //A list of animation marker, use ['line'] for now
+options = []                        //A list of options such as animation marker 'line', and plot place 'multi-output' or 'single-out' table or both
 
 raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
 raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
