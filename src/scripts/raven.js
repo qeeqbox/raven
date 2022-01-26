@@ -33,6 +33,7 @@ class qb_raven_map {
     this.location = options.location
     this.panels = options.panels
     this.disable = options.disable
+    this.websocket = options.websocket
     this.verbose = options.verbose
     this.qb_world_countries = {}
     this.qb_world_cities = {}
@@ -195,11 +196,11 @@ class qb_raven_map {
       var loaded = []
       var dobule_check = []
       var good = false
-      var scripts = ['qb_world_countries','qb_companies_codes','qb_countries_codes_flags','qb_ips_codes','qb_world_cities','qb_ports_codes']
+      var scripts = ['qb_world_countries', 'qb_companies_codes', 'qb_countries_codes_flags', 'qb_ips_codes', 'qb_world_cities', 'qb_ports_codes']
       var filtered = scripts.filter(item => !this.disable.includes(item))
       const delay = x => new Promise(y => setTimeout(y, x))
       filtered.forEach((item, i) => {
-        try{
+        try {
           if (typeof(window[item]) === "undefined" && !loaded.includes(item)) {
             this.spinner_on_off(true, '[!] Loading: ' + item)
             $.holdReady(true);
@@ -208,21 +209,19 @@ class qb_raven_map {
               loaded.push(item)
             });
           }
-        }
-        catch{
-        }
+        } catch {}
       });
 
       while (true) {
-        if (loaded.sort().toString() == filtered.sort().toString()){
+        if (loaded.sort().toString() == filtered.sort().toString()) {
           filtered.forEach((item, i) => {
-            if(typeof([item]) !== "undefined"){
+            if (typeof([item]) !== "undefined") {
               this.spinner_on_off(true, '[!] Loaded: ' + item)
               dobule_check.push(item)
             }
           });
 
-          if (dobule_check.sort().toString() == filtered.sort().toString()){
+          if (dobule_check.sort().toString() == filtered.sort().toString()) {
             if (this.disable.includes('qb_companies_codes')) {
               window['qb_companies_codes'] = []
             }
@@ -884,7 +883,9 @@ class qb_raven_map {
 
   setup_raven_single_output_panel() {
     if (this.panels.includes('single-output')) {
-      $("#raven-single-output-panel").css({"display":"flex"});
+      $("#raven-single-output-panel").css({
+        "display": "flex"
+      });
       /*
       $("#raven-single-output-panel").css({"display":"flex"});
       $('#raven-single-output-panel').dialog({
@@ -1042,100 +1043,100 @@ class qb_raven_map {
 
   setup_task_bar() {
     if (this.panels.includes('taskbar')) {
-    $('#taskbar-panel').dialog({
-      position: {
-        at: 'right top',
-        my: 'right-40 top+40',
-        of: window
-      },
-      closeText: '',
-      width: 'auto',
-      autoResize: true,
-      modal: false,
-      resizable: false,
-      minHeight: 'auto',
-      dialogClass: 'taskbar-panel'
-    })
+      $('#taskbar-panel').dialog({
+        position: {
+          at: 'right top',
+          my: 'right-40 top+40',
+          of: window
+        },
+        closeText: '',
+        width: 'auto',
+        autoResize: true,
+        modal: false,
+        resizable: false,
+        minHeight: 'auto',
+        dialogClass: 'taskbar-panel'
+      })
 
-    $('body').on('click', '.taskbar-panel-body #multi-output', () => {
-      $('#raven-multi-output-panel').dialog('open')
-      this.disable_enable_item_taskbar(false, 'multi-output')
-    })
+      $('body').on('click', '.taskbar-panel-body #multi-output', () => {
+        $('#raven-multi-output-panel').dialog('open')
+        this.disable_enable_item_taskbar(false, 'multi-output')
+      })
 
-    $('body').on('click', '.taskbar-panel-body #insert', () => {
-      $('#raven-insert-panel').dialog('open')
-      this.disable_enable_item_taskbar(false, 'insert')
-    })
+      $('body').on('click', '.taskbar-panel-body #insert', () => {
+        $('#raven-insert-panel').dialog('open')
+        this.disable_enable_item_taskbar(false, 'insert')
+      })
 
-    $('body').on('click', '.taskbar-panel-body #random', () => {
-      $('#raven-random-panel').dialog('open')
-      this.disable_enable_item_taskbar(false, 'random')
-      $('#raven-random-text').val('1000')
-      $('#raven-random-timeout').val('1000')
-      $('#raven-random-delay').val('500')
-    })
+      $('body').on('click', '.taskbar-panel-body #random', () => {
+        $('#raven-random-panel').dialog('open')
+        this.disable_enable_item_taskbar(false, 'random')
+        $('#raven-random-text').val('1000')
+        $('#raven-random-timeout').val('1000')
+        $('#raven-random-delay').val('500')
+      })
 
-    $('body').on('click', '.taskbar-panel-body #reset', async () => {
-      this.spinner_on_off(true, 'Resetting interface')
-      this.global_lock = true
-      this.db = []
-      await this.delay(2000)
-      this.reset_everything()
-      this.global_lock = false
-      this.spinner_on_off(false)
-    })
+      $('body').on('click', '.taskbar-panel-body #reset', async () => {
+        this.spinner_on_off(true, 'Resetting interface')
+        this.global_lock = true
+        this.db = []
+        await this.delay(2000)
+        this.reset_everything()
+        this.global_lock = false
+        this.spinner_on_off(false)
+      })
 
-    $('#global-country-color').on('input',
-      () => {
-        const color = $('#global-country-color').val()
-        this.orginal_country_color = color
-        $("path[id^='raven-worldmap-country']").each(function() {
-          $(this).css({
-            "fill": color,
-            "stroke": "#313131"
+      $('#global-country-color').on('input',
+        () => {
+          const color = $('#global-country-color').val()
+          this.orginal_country_color = color
+          $("path[id^='raven-worldmap-country']").each(function() {
+            $(this).css({
+              "fill": color,
+              "stroke": "#313131"
+            });
           });
-        });
-      }
-    );
+        }
+      );
 
-    $('#global-background-color').on('input',
-      () => {
-        const color = $('#global-background-color').val()
-        $("body").css({
-          "background-color": color
-        });
-        $(".raven-worldmap-water").css({
-          "fill": color,
-          "stroke": color
-        });
-      }
-    );
+      $('#global-background-color').on('input',
+        () => {
+          const color = $('#global-background-color').val()
+          $("body").css({
+            "background-color": color
+          });
+          $(".raven-worldmap-water").css({
+            "fill": color,
+            "stroke": color
+          });
+        }
+      );
 
-    $('#sun-style').on('click',
-      () => {
-        this.change_color('#AE9C86', '#C4E4ED')
-      }
-    );
+      $('#sun-style').on('click',
+        () => {
+          this.change_color('#AE9C86', '#C4E4ED')
+        }
+      );
 
-    $('#moon-style').on('click',
-      () => {
-        this.change_color('#666666', '#252525')
-      }
-    );
+      $('#moon-style').on('click',
+        () => {
+          this.change_color('#666666', '#252525')
+        }
+      );
 
-    $('#half-moon-style').on('click',
-      () => {
-        this.change_color('#494949', '#252525')
-      }
-    );
+      $('#half-moon-style').on('click',
+        () => {
+          this.change_color('#494949', '#252525')
+        }
+      );
 
-    $('#global-background-color').val(this.orginal_background_color)
-    $('#global-country-color').val(this.orginal_country_color)
+      $('#global-background-color').val(this.orginal_background_color)
+      $('#global-country-color').val(this.orginal_country_color)
 
-    this.disable_enable_item_taskbar(true, 'random')
-    //this.disable_enable_item_taskbar(true, 'single-output')
-    this.disable_enable_item_taskbar(true, 'multi-output')
-    this.disable_enable_item_taskbar(true, 'insert')
+      this.disable_enable_item_taskbar(true, 'random')
+      //this.disable_enable_item_taskbar(true, 'single-output')
+      this.disable_enable_item_taskbar(true, 'multi-output')
+      this.disable_enable_item_taskbar(true, 'insert')
     }
   }
 
@@ -1204,41 +1205,43 @@ class qb_raven_map {
 
   disable_enable_item_taskbar(add, name) {
     try {
-      if (add) {
-        switch (name) {
-          case 'single-output':
-            $('.taskbar-panel-body').prepend('<div id="single-output" ><i class="fa fa-single-table" aria-hidden="true"></i></div>')
-            break
-          case 'multi-output':
-            $('.taskbar-panel-body').prepend('<div id="multi-output" ><i class="fa fa-table" aria-hidden="true"></i></div>')
-            break
-          case 'insert':
-            $('.taskbar-panel-body').prepend('<div id="insert" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>')
-            break
-          case 'random':
-            $('.taskbar-panel-body').prepend('<div id="random" ><i class="fa fa-random" aria-hidden="true"></i></div>')
-            break
-          case 'setting':
-            $('.taskbar-panel-body').append('<div id="setting" ><i class="fa fa-cog" aria-hidden="true"></i></div>')
-            break
+      if (this.panels.includes('taskbar')) {
+        if (add) {
+          switch (name) {
+            case 'single-output':
+              $('.taskbar-panel-body').prepend('<div id="single-output" ><i class="fa fa-single-table" aria-hidden="true"></i></div>')
+              break
+            case 'multi-output':
+              $('.taskbar-panel-body').prepend('<div id="multi-output" ><i class="fa fa-table" aria-hidden="true"></i></div>')
+              break
+            case 'insert':
+              $('.taskbar-panel-body').prepend('<div id="insert" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>')
+              break
+            case 'random':
+              $('.taskbar-panel-body').prepend('<div id="random" ><i class="fa fa-random" aria-hidden="true"></i></div>')
+              break
+            case 'setting':
+              $('.taskbar-panel-body').append('<div id="setting" ><i class="fa fa-cog" aria-hidden="true"></i></div>')
+              break
+          }
+        } else {
+          $('.taskbar-panel-body #' + name).remove()
         }
-      } else {
-        $('.taskbar-panel-body #' + name).remove()
-      }
 
-      window.addEventListener('resize', function(event) {
+        window.addEventListener('resize', () => {
+          $('#taskbar-panel').dialog('option', 'position', {
+            at: 'right top',
+            my: 'right-40 top+40',
+            of: window
+          })
+        })
+
         $('#taskbar-panel').dialog('option', 'position', {
           at: 'right top',
           my: 'right-40 top+40',
           of: window
         })
-      })
-
-      $('#taskbar-panel').dialog('option', 'position', {
-        at: 'right top',
-        my: 'right-40 top+40',
-        of: window
-      })
+      }
     } catch (err) {
 
     }
@@ -1418,7 +1421,7 @@ class qb_raven_map {
             }
           }
           //need to change for single
-          if (options.includes('multi-output')){
+          if (options.includes('multi-output')) {
             if ($('#raven-multi-output-panel-body-table').children().length > 10) {
               $('#raven-multi-output-panel-body-table .country-row:first').remove()
             }
@@ -1473,11 +1476,11 @@ class qb_raven_map {
             }
           })
 
-          if (options.includes('multi-output')){
+          if (options.includes('multi-output')) {
             $('#raven-multi-output-panel-body-table').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info">' + temp_item.to.info.join('<br>') + '</div></div>')
           }
 
-          if (options.includes('single-output')){
+          if (options.includes('single-output')) {
             $('#raven-single-output-panel-body').html('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info-full-width">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info-full-width">' + temp_item.to.info.join('<br>') + '</div></div>')
           }
 
@@ -1498,6 +1501,47 @@ class qb_raven_map {
     }
 
     return ret_value
+  }
+
+  fetch_data_from_server(){
+    var is_socket_open = false
+    var fetch_data_from_server_routine = () => {
+      var wb = new WebSocket(this.websocket.server)
+      return new Promise((resolve, reject) => {
+        wb.onopen = (e) => {
+          is_socket_open = true
+          resolve(is_socket_open)
+        }
+        wb.onmessage = (e) => {
+          try{
+            const parsed = JSON.parse(e.data);
+            parsed.forEach((item, i) => {
+              if (item['function'] == 'add_to_table'){
+                this.add_to_data_to_table(item['method'],item['object'],item['color'],item['timeout'],item['options'])
+              }
+            });
+          }
+          catch(err)
+          {
+            this.verbose && console.log(err)
+          }
+        }
+        wb.onerror = (e) => {
+          is_socket_open = false
+          reject(e)
+        }
+        wb.onclose = (e) => {
+          is_socket_open = false
+          reject(e)
+        }
+      }).catch(error => this.verbose && console.log(error));
+    }
+
+    setInterval(() => {
+      if (!is_socket_open) {
+        fetch_data_from_server_routine()
+      }
+    }, this.websocket.request_timeout)
   }
 
   async random_data(m, timeout, delay, type_of_data) {
@@ -1528,7 +1572,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line','multi-output','single-output'])
+            }, timeout, ['line', 'multi-output', 'single-output'])
           }
         } else if (random_value === 'Cities' && !this.disable.includes('cities')) {
           const from = Object.keys(this.qb_world_cities)[Math.floor(Math.random() * max_len_world_cities)]
@@ -1546,7 +1590,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line','multi-output','single-output'])
+            }, timeout, ['line', 'multi-output', 'single-output'])
           }
         } else if (random_value === 'IPs') {
           const temp_from = [Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)]
@@ -1567,7 +1611,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line','multi-output','single-output'])
+            }, timeout, ['line', 'multi-output', 'single-output'])
           }
         } else if (random_value === 'Coordinates') {
           from = [Math.random() * 360 - 180, Math.random() * 360 - 180]
@@ -1585,7 +1629,7 @@ class qb_raven_map {
                 from: temp_color,
                 to: temp_color
               }
-            }, timeout, ['line','multi-output','single-output'])
+            }, timeout, ['line', 'multi-output', 'single-output'])
           }
         }
         await this.delay(delay)

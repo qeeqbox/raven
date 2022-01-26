@@ -55,12 +55,17 @@
         'location': 'scripts',
         'panels': ['multi-output', 'single-output','tooltip', 'random', 'insert','taskbar'],
         'disable': [],
-        'verbose': true
+        'websocket':{'server':'ws://localhost:5678',
+                      'request_timeout':3000},
+        'verbose': false
       }
 
       window['raven'] = document.getElementById('raven-iframe').contentWindow.raven
       window['raven'].init_all(raven_options)
       window['raven'].init_world()
+      //window['raven'].fetch_data_from_server()
+      //'disable': ['multi-output', 'single-output','tooltip', 'random', 'insert','taskbar','move_to_country'],
+
     });
 
   </script>
