@@ -46,6 +46,7 @@ class qb_raven_map {
     this.markers_queue = []
     this.db = []
     this.global_lock = false
+    this.unknown_flag = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAWCAYAAABKbiVHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAEAQAABAEBy2R4jwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAF3SURBVEiJzZaxThtBEIa/XZ+hACQ7BQoSPIHlu9PpJCpQTLpQ0FDmBULDM4BEzVsg0QEvYFGlin0rZMlJZ4GgSRTT3eWyHgpAoqC6Xdn+q9UUnz7NzmhXZVn2F2gw+4wDoFGv1xdbrda/WVkMBoOFsiwLPSuB9xK4Aowxq1rrj0VRjNI0fZy6zHA4XMnz/BA4EJE1ay1BEGCMuSzL8luapg9Tk8nzPAKOgAul1DUwFpGvIrIXBMEHYHtqMpPJ5FZrncZx3H+tdbvds2azOQC2jDHrURTdTUUmSZIRMHpb63Q6/40xf0QEpdRyFa63ber3+7sisqmU+t5ut39WYThvE0CWZR3gHHiw1u4rpaQKx7kzvV4vAq6AR2AnSZL7qiznzmitT4AlrfWnMAx/ObFcZYAW8DsMwx+uIB8ydaDwwHG/plqt9kVEKg2sdxlr7eeX440ry8dqHwMCnLqCfMiMeZZxjrNMHMcbPkTA43PgI3Mlo+bpQ/4E1wl785eim/kAAAAASUVORK5CYII="/>'
   }
 
   async init_world() {
@@ -1345,15 +1346,13 @@ class qb_raven_map {
 
         sorted_results[_type].forEach((attack_event, i) => {
           const temp_item = {
-            flag: '?',
+            flag: this.unknown_flag,
             info: []
           }
 
           if ('f' in attack_event) {
             if (attack_event.f !== '') {
               temp_item.flag = '<img src="data:image/png;base64,' + attack_event.f + '"/>'
-            } else {
-              temp_item.flag = '?'
             }
           }
           if ('ip' in attack_event) {
@@ -1413,11 +1412,11 @@ class qb_raven_map {
           const action = '⮕'
           const temp_item = {
             from: {
-              flag: '?',
+              flag: this.unknown_flag,
               info: []
             },
             to: {
-              flag: '?',
+              flag: this.unknown_flag,
               info: []
             }
           }
@@ -1433,8 +1432,6 @@ class qb_raven_map {
               if ('f' in attack_event[item]) {
                 if (attack_event[item].f !== '') {
                   temp_item[item].flag = '<img src="data:image/png;base64,' + attack_event[item].f + '"/>'
-                } else {
-                  temp_item[item].flag = '?'
                 }
               }
               if ('ip' in attack_event[item]) {
