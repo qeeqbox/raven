@@ -195,6 +195,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 ```sh
 sudo docker build -t simulation . && sudo docker run -p 5678:5678 -p 8080:8080 -it simulation
 ```
+Then, go to http://localhost:8080/simulation.html
 
 ## Resources
 - Wikipedia, naturalearthdata, d3.js, topojson, jquery, font-awesome, OSINT package, iana, geonames, AFRINIC, APNIC, ARIN, LACNIC and RIPE
