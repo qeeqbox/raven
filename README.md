@@ -22,7 +22,14 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
 - Can be used online or offline (Static)
 - Theme picker module
 
-## Embed it
+## Data
+You have different options `ip`, `name`, and `coordinates`
+
+- `ip`            private or public ip -> any of these IPs -> `0.0.0.0` or `8.8.8.8` as `{'from':'0.0.0.0','to':'8.8.8.8'}`
+- `name`          city,state,country -> any of these formats work -> `seattle,wa,us` or `0,us` as `{'from':'seattle,wa,us','to':'0,in'}`
+- `coordinates`   Latitude and Longitude as `{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']}`
+
+## Method 1 - Embed it and interact with it
 ```html
   //You only need to embed this iframe in your project.
   <iframe id="raven-iframe" src="https://qeeqbox.github.io/raven/src/raven.html" frameborder="0" width="100%" height="100%" scrolling="auto"></iframe>
@@ -63,7 +70,6 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
   </script>
 ```
 
-## Functions
 #### Plotting data
 ```js
 raven.add_marker_by_name()          //Plot info by country or city name
@@ -93,6 +99,101 @@ options = []                        //A list of options such as animation marker
 raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
 raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
 raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
+```
+
+## Method 2 - Embed it, and use websocket for plotting
+#### Raven Map
+```html
+  //You only need to embed this iframe in your project.
+  <iframe id="raven-iframe" src="src/raven.html" frameborder="0" width="100%" height="100%" scrolling="auto"></iframe>
+
+  <script type="text/javascript">
+
+    document.getElementById('raven-iframe').addEventListener("load", function() {
+
+      var raven_options = {
+        'world_type': null,
+        'selected_countries': [],
+        'remove_countries': ['aq'],
+        'height': window.innerHeight,
+        'width': window.innerWidth,
+        'backup_background_color': '#212222',
+        'orginal_country_color': '#737373',
+        'clicked_country_color': '#6c4242',
+        'selected_country_color': '#ff726f',
+        'attack_output': true,
+        'global_timeout': 2000,
+        'global_stats_limit': 10,
+        'db_length': 1000,
+        'location': 'scripts',
+        'panels': ['single-output'],
+        'disable': ['multi-output','tooltip', 'random', 'insert','taskbar','move_to_country'],
+        'websocket':{'server':'ws://localhost:5678',
+                      'request_timeout':3000},
+        'verbose': false
+      }
+
+      window['raven'] = document.getElementById('raven-iframe').contentWindow.raven
+      window['raven'].init_all(raven_options)
+      window['raven'].init_world()
+      window['raven'].fetch_data_from_server()
+    });
+  </script>
+```
+
+#### Plotting data - Send the json object using Websocket ws://localhost:5678
+```json
+    {
+    "function":"marker",
+      "method": "ip",
+      "object": {
+        "from": "0.0.0.0",
+        "to": "0.0.0.0"
+      },
+      "color": {
+        "line": {
+          "from": "#977777",
+          "to": "#17777",
+        }
+      },
+      "timeout": 1000,
+      "options": [
+        "line",
+        "single-output",
+        "multi-output"
+      ]
+    }
+
+```
+
+#### Plotting data and add to table - Send the json object using Websocket ws://localhost:5678
+```json
+    {
+    "function":"table",
+      "method": "name",
+      "object": {
+        "from": "0,us",
+        "to": "0,br"
+      },
+      "color": {
+        "line": {
+          "from": "#977777",
+          "to": "#17777",
+        }
+      },
+      "timeout": 1000,
+      "options": [
+        "line",
+        "single-output",
+        "multi-output"
+      ]
+    }
+
+```
+
+### Run simulation
+```sh
+sudo docker build -t simulation . && sudo docker run -p 5678:5678 -p 8080:8080 -it simulation
 ```
 
 ## Resources

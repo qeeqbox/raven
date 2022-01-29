@@ -8,6 +8,7 @@
 //  contributors list qeeqbox/raven/graphs/contributors
 //  -------------------------------------------------------------
 
+//{disable_obfuscation_compression_all}//
 //{disable_obfuscation_start}//
 class qb_raven_map {
   constructor(svg_id) {
@@ -37,7 +38,7 @@ class qb_raven_map {
     this.verbose = options.verbose
     this.qb_world_countries = {}
     this.qb_world_cities = {}
-    this.qb_countries_codes_flags = {}
+    this.qb_countries_codes = {}
     this.qb_companies_codes = []
     this.qb_ports_codes = []
     this.qb_ips_codes = []
@@ -179,15 +180,15 @@ class qb_raven_map {
       this.qb_world_countries = (topojson.feature(qb_world_countries, qb_world_countries.objects.countries).features).filter(obj => !this.remove_countries.includes(obj.properties.cc)),
       this.qb_world_cities = qb_world_cities,
       this.qb_private_ips_codes = qb_private_ips_codes,
-      this.qb_countries_codes_flags = qb_countries_codes_flags,
+      this.qb_countries_codes = qb_countries_codes,
       this.qb_companies_codes = qb_companies_codes,
       this.qb_ports_codes = qb_ports_codes,
       this.qb_ips_codes = qb_ips_codes
     ])
-    if (this.qb_countries_codes_flags && qb_ips_codes && this.qb_world_countries) {
+    if (this.qb_countries_codes && qb_ips_codes && this.qb_world_countries) {
       this.draw()
     } else {
-      this.verbose && console.log('qb_world_countries, this.qb_world_cities, this.qb_countries_codes_flags, and qb_ips_codes modules are needed')
+      this.verbose && console.log('qb_world_countries, this.qb_world_cities, this.qb_countries_codes, and qb_ips_codes modules are needed')
     }
   }
 
@@ -196,7 +197,7 @@ class qb_raven_map {
       var loaded = []
       var dobule_check = []
       var good = false
-      var scripts = ['qb_world_countries', 'qb_companies_codes', 'qb_countries_codes_flags', 'qb_ips_codes', 'qb_world_cities', 'qb_ports_codes']
+      var scripts = ['qb_world_countries', 'qb_companies_codes', 'qb_countries_codes', 'qb_ips_codes', 'qb_world_cities', 'qb_ports_codes']
       var filtered = scripts.filter(item => !this.disable.includes(item))
       const delay = x => new Promise(y => setTimeout(y, x))
       filtered.forEach((item, i) => {
@@ -225,8 +226,8 @@ class qb_raven_map {
             if (this.disable.includes('qb_companies_codes')) {
               window['qb_companies_codes'] = []
             }
-            if (this.disable.includes('qb_countries_codes_flags')) {
-              window['qb_countries_codes_flags'] = {}
+            if (this.disable.includes('qb_countries_codes')) {
+              window['qb_countries_codes'] = {}
             }
             if (this.disable.includes('qb_ips_codes')) {
               window['qb_private_ips_codes'] = []
@@ -292,8 +293,8 @@ class qb_raven_map {
             return obj.properties.cc === country
           })
           if (target_country) {
-            if (target_country.properties.cc in this.qb_countries_codes_flags) {
-              return_info = JSON.parse(JSON.stringify(this.qb_countries_codes_flags[target_country.properties.cc]))
+            if (target_country.properties.cc in this.qb_countries_codes) {
+              return_info = JSON.parse(JSON.stringify(this.qb_countries_codes[target_country.properties.cc]))
             }
           }
         }
@@ -321,8 +322,8 @@ class qb_raven_map {
             })
 
             if (target_country) {
-              if (target_country.properties.cc in this.qb_countries_codes_flags) {
-                return_info = JSON.parse(JSON.stringify(this.qb_countries_codes_flags[target_country.properties.cc]))
+              if (target_country.properties.cc in this.qb_countries_codes) {
+                return_info = JSON.parse(JSON.stringify(this.qb_countries_codes[target_country.properties.cc]))
               }
 
               if (temp_ip_info && typeof temp_ip_info === 'object') {
@@ -402,8 +403,8 @@ class qb_raven_map {
           if (marker_object[item] in this.qb_world_cities) {
             temp_marker_object[item] = this.qb_world_cities[marker_object[item]]
             if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item] !== null) {
-              if (temp_marker_object[item].properties.cc in this.qb_countries_codes_flags) {
-                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes_flags[temp_marker_object[item].properties.cc]))
+              if (temp_marker_object[item].properties.cc in this.qb_countries_codes) {
+                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].properties.cc]))
               }
 
               return_info[item].c = temp_marker_object[item].properties.n
@@ -411,8 +412,8 @@ class qb_raven_map {
           } else {
             temp_marker_object[item] = marker_object[item].split(',')
             if (temp_marker_object[item].length === 2) {
-              if (temp_marker_object[item][1] in this.qb_countries_codes_flags) {
-                temp_marker_object[item] = this.qb_countries_codes_flags[temp_marker_object[item][1]]
+              if (temp_marker_object[item][1] in this.qb_countries_codes) {
+                temp_marker_object[item] = this.qb_countries_codes[temp_marker_object[item][1]]
                 return_info[item] = temp_marker_object[item]
                 temp_marker_object[item] = this.qb_world_countries.find(obj => obj.properties.cc === temp_marker_object[item].cc)
                 temp_marker_object[item] = d3.geoCentroid(temp_marker_object[item])
@@ -512,8 +513,8 @@ class qb_raven_map {
             return_info[item]['i'] = is_private.i
           } else {
             if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item]) {
-              if (temp_marker_object[item].cc in this.qb_countries_codes_flags) {
-                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes_flags[temp_marker_object[item].cc]))
+              if (temp_marker_object[item].cc in this.qb_countries_codes) {
+                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].cc]))
 
 
                 if (temp_ip_info && typeof temp_ip_info === 'object') {
@@ -1313,22 +1314,22 @@ class qb_raven_map {
         const temp_item = []
         if (attack_event[0] === cc) {
           if (sorted_results.targets.length < stats_limit) {
-            if (attack_event[0] in this.qb_countries_codes_flags) {
+            if (attack_event[0] in this.qb_countries_codes) {
               sorted_results.targets.push({
                 count: item[1],
-                n: this.qb_countries_codes_flags[attack_event[1]].n,
-                f: this.qb_countries_codes_flags[attack_event[1]].f
+                n: this.qb_countries_codes[attack_event[1]].n,
+                f: this.qb_countries_codes[attack_event[1]].f
               })
             }
           }
         }
         if (attack_event[1] === cc) {
           if (sorted_results.origins.length < stats_limit) {
-            if (attack_event[1] in this.qb_countries_codes_flags) {
+            if (attack_event[1] in this.qb_countries_codes) {
               sorted_results.origins.push({
                 count: item[1],
-                n: this.qb_countries_codes_flags[attack_event[0]].n,
-                f: this.qb_countries_codes_flags[attack_event[0]].f
+                n: this.qb_countries_codes[attack_event[0]].n,
+                f: this.qb_countries_codes[attack_event[0]].f
               })
             }
           }
@@ -1516,8 +1517,17 @@ class qb_raven_map {
           try{
             const parsed = JSON.parse(e.data);
             parsed.forEach((item, i) => {
-              if (item['function'] == 'add_to_table'){
+              if (item['function'] == 'table'){
                 this.add_to_data_to_table(item['method'],item['object'],item['color'],item['timeout'],item['options'])
+              }
+              else if (item['function'] == 'marker' && item['method'] == 'ip'){
+                this.add_marker_by_ip(item['object'],item['color'],item['timeout'],item['options'])
+              }
+              else if (item['function'] == 'marker' && item['method'] == 'name'){
+                this.add_marker_by_name(item['object'],item['color'],item['timeout'],item['options'])
+              }
+              else if (item['function'] == 'marker' && item['method'] == 'coordinates'){
+                this.add_marker_by_coordinates(item['object'],item['color'],item['timeout'],item['options'])
               }
             });
           }
