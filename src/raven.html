@@ -17,12 +17,12 @@
 <head>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script src="d3/d3.v5.min.js"></script>
+<script src="topojson/topojson-client.min.js"></script>
+<script src="jquery/jquery-3.6.0.js"></script>
+<script src="jquery/jquery-ui.js"></script>
 <script type="text/javascript" src="scripts/raven.js"></script>
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="jquery/jquery-ui.css">
 <style type="text/css">
   body {
     background-color: #212222;
@@ -75,6 +75,12 @@
     fill: none;
     stroke-width: 2px;
     opacity: 1;
+    stroke-linecap: round;
+  }
+
+  .raven-worldmap-point {
+    fill: none;
+    stroke-width: 8px;
     stroke-linecap: round;
   }
 

@@ -1,6 +1,6 @@
 <p align="center"> <img src="https://github.com/qeeqbox/raven/blob/main/readme/ravenlogo.png"></p>
 
-Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It uses D3.js with TOPO JSON, has 247 countries, ~100,000 cities, and can be used in an isolated environment **without external lookups!**. 
+Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It uses D3.js with TOPO JSON, has 247 countries, ~100,000 cities, and can be used in an isolated environment **without external lookups!**.
 
 ## Live - Demo [Firefox, Chrome or Safari]
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
@@ -32,8 +32,8 @@ You have different options `ip`, `name`, and `coordinates`
 ## Method 1 - Embed it and interact with it
 ```html
   //You only need to embed this iframe in your project.
-  <iframe id="raven-iframe" src="https://qeeqbox.github.io/raven/src/raven.html" frameborder="0" width="100%" height="100%" scrolling="auto"></iframe>
-  
+  <iframe id="raven-iframe" src="src/raven.html" frameborder="0" width="100%" height="100%" scrolling="auto"></iframe>
+
   //Then, run the initialization script with your custom settings - That's all!
   <script type="text/javascript">
 
@@ -63,14 +63,14 @@ You have different options `ip`, `name`, and `coordinates`
       window['raven'].init_all(raven_options)
       window['raven'].init_world()
     });
-    
+
     //After that, you can plot any data you want
     raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
 
   </script>
 ```
 
-#### Plotting data
+#### Plotting data (functions)
 ```js
 raven.add_marker_by_name()          //Plot info by country or city name
 raven.add_marker_by_ip()            //Plot data by IP address
@@ -80,13 +80,23 @@ marker_object                       //An object {'from':'','to':""} see examples
 colors_object                       //An object {'line: {'from': ''#FF0000','to': 'FF0000'}} this the color of the line between 2 points - (if null, then a random color will be picked)
 timeout                             //Animation time out
 options = []                        //A list of options such as animation marker
+```
 
+#### Plotting data (As line, from -> to)
+```js
 raven.add_marker_by_name({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line'])
-raven.add_marker_by_ip({'from':'0.0.0.0','to':'0.0.0.0:53'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line')
+raven.add_marker_by_ip({'from':'0.0.0.0','to':'0.0.0.0:53'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line'])
 raven.add_marker_by_coordinates({'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line'])
 ```
 
-#### Plotting data + adding it to the output table
+#### Plotting data (As point)
+```js
+raven.add_marker_by_name({'from':'portland,or,us','to':null},{'line':{'from':null,'to':null}},2000,['point'])
+raven.add_marker_by_ip({'from':'8.8.8.8','to':null},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['point'])
+raven.add_marker_by_coordinates({'from':['-11.074920','-51.648929'],'to':null},{'line':{'from':null,'to':'#FFFF00'}},1000,['point'])
+```
+
+#### Plotting data + adding it to the output table (function)
 ```js
 raven.add_to_data_to_table()        //Plot info and add them to the output table
 
@@ -95,7 +105,17 @@ marker_object                       //An object {'from':'','to':""} see examples
 colors_object                       //An object {'line: {'from': ''#FF0000','to': 'FF0000'}} this the color of the line between 2 points - (if null, then a random color will be picked)
 timeout                             //Animation time out
 options = []                        //A list of options such as animation marker 'line', and plot place 'multi-output' or 'single-out' table or both
+```
 
+#### Plotting data + adding it to the output table (As line, from -> to)
+```js
+raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
+raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
+raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
+```
+
+#### Plotting data + adding it to the output table (As point)
+```js
 raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
 raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
 raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
@@ -191,7 +211,7 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 
 ```
 
-### Run simulation
+### Run simulation (Isolated)
 ```sh
 sudo docker build -t simulation . && sudo docker run -p 5678:5678 -p 8080:8080 -it simulation
 ```
@@ -202,10 +222,8 @@ Then, go to http://localhost:8080/simulation.html
 - Let me know if I missed a reference or resource!
 
 ## Disclaimer\Notes
-- The dark grey style is typical in my projects (You can change that if you want)
+- The dark gray style is typical in my projects (You can change that if you want)
 - If you need help improving your world map or cyber threat map, reach out, and I might be able to help you!
-- Please spend some time in understanding how this project works before opening any issues or leaving any inquiries or **comments**
-- If you want to see other examples of worldmaps that **DO NOT** have all the features listed in this project (Google image search -> world map dark grey)
 
 ## Links
 - [kitploit](https://www.kitploit.com/2022/01/raven-advanced-cyber-threat-map.html)

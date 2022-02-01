@@ -68,7 +68,6 @@ class qb_raven_map {
     this.setup_raven_tooltip_panel()
     this.setup_raven_random_panel()
     this.startup_windwos()
-    const _root = this
     this.verbose && console.log('Init qb_worldmap')
     this.projection = d3.geoEquirectangular().scale(this.width / 2 / Math.PI).translate([this.width / 2, this.height / 2]).rotate([0])
     this.org_scale = this.projection.scale()
@@ -123,28 +122,26 @@ class qb_raven_map {
 
     this.curved_marker = d3.line()
       .curve(this.custom_curve)
-      .x(function(d) {
-        return _root.projection([d[0], d[1]])[0]
+      .x((d) => {
+        return this.projection([d[0], d[1]])[0]
       })
-      .y(function(d) {
-        return _root.projection([d[0], d[1]])[1]
+      .y((d) => {
+        return this.projection([d[0], d[1]])[1]
       })
 
     this.q_tween_start = function() {
-      const _root = this
-      return function(t) {
-        const l = _root.getTotalLength() //
-        d3.select(_root).attr('stroke-dasharray', l)
-        d3.select(_root).attr('stroke-dashoffset', d3.interpolateNumber(l, 0)(t))
+      return (t) => {
+        const l = this.getTotalLength()
+        d3.select(this).attr('stroke-dasharray', l)
+        d3.select(this).attr('stroke-dashoffset', d3.interpolateNumber(l, 0)(t))
       }
     }
 
     this.q_tween_end = function() {
-      const _root = this
-      return function(t) {
-        const l = _root.getTotalLength() //
-        d3.select(_root).attr('stroke-dasharray', l)
-        d3.select(_root).attr('stroke-dashoffset', '-' + d3.interpolateNumber(0, l)(t))
+      return (t) => {
+        const l = this.getTotalLength()
+        d3.select(this).attr('stroke-dasharray', l)
+        d3.select(this).attr('stroke-dashoffset', '-' + d3.interpolateNumber(0, l)(t))
       }
     }
 
@@ -399,7 +396,7 @@ class qb_raven_map {
       to: null
     }
     try {
-      ['from', 'to'].forEach((item, i) => {
+      for (const item of ['from', 'to']){
         if (marker_object[item]) {
           if (marker_object[item] in this.qb_world_cities) {
             temp_marker_object[item] = this.qb_world_cities[marker_object[item]]
@@ -430,7 +427,7 @@ class qb_raven_map {
             }
           }
         }
-      })
+      }
 
       if (marker.includes('line')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
@@ -455,11 +452,28 @@ class qb_raven_map {
               temp_colors_object.line.to = this.random_bg_color()
             }
             this.draw_line_mark(temp_marker_object.from, temp_marker_object.to, temp_colors_object.line.from, temp_colors_object.line.to, timeout, temp_line_name)
-            this.markers_queue.push(temp_line_name)
+            return_info.active = true
+          }
+        }
+      } else if (marker.includes('point')) {
+        if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
+          if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
+            return_info.from_result = true
+          }
+        }
+        if (return_info.from_result) {
+          // temp_line_name = JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
+          temp_line_name = time_temp + '-point-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry])
+          if (!this.markers_queue.includes(temp_line_name)) {
+            if (temp_colors_object.line.from === null) {
+              temp_colors_object.line.from = this.random_bg_color()
+            }
+            this.draw_point_mark(temp_marker_object.from, temp_colors_object.line.from, timeout, temp_line_name)
             return_info.active = true
           }
         }
       }
+
     } catch (err) {
       this.verbose && console.log(err)
     }
@@ -480,7 +494,7 @@ class qb_raven_map {
     const temp_colors_object = JSON.parse(JSON.stringify(colors_object))
     let temp_ip_info = []
     let temp_line_name = null
-    const return_info = {
+    let return_info = {
       from: marker_object.from,
       to: marker_object.to,
       active: false,
@@ -494,7 +508,7 @@ class qb_raven_map {
       to: null
     }
     try {
-      ['from', 'to'].forEach((item, i) => {
+      for (const item of ['from', 'to']){
         if (marker_object[item]) {
           let ip_address_and_port = marker_object[item].split(':')
           temp_marker_object[item] = this.filter_by_ip(qb_ips_codes, ip_address_and_port[0])
@@ -544,7 +558,7 @@ class qb_raven_map {
             }
           }
         }
-      })
+      }
 
       if (marker.includes('line')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
@@ -558,7 +572,6 @@ class qb_raven_map {
           }
         }
         if (return_info.from_result && return_info.to_result) {
-          // temp_line_name = JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
           temp_line_name = time_temp + '-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
           if (!this.markers_queue.includes(temp_line_name)) {
             if (temp_colors_object.line.from === null) {
@@ -569,12 +582,35 @@ class qb_raven_map {
             }
 
             this.draw_line_mark(temp_marker_object.from, temp_marker_object.to, temp_colors_object.line.from, temp_colors_object.line.to, timeout, temp_line_name)
-            this.markers_queue.push(temp_line_name)
             return_info.active = true
           }
         } else {
-          return_info.from_result = true
-          return_info.to_result = true
+          if ((typeof(return_info.from) === 'object') && (typeof(return_info.to) === 'object')) {
+            return_info.active = true
+            return_info.from_result = true
+            return_info.to_result = true
+          }
+        }
+      } else if (marker.includes('point')) {
+        if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
+          if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
+            return_info.from_result = true
+          }
+        }
+        if (return_info.from_result) {
+          temp_line_name = time_temp + '-point-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry])
+          if (!this.markers_queue.includes(temp_line_name)) {
+            if (temp_colors_object.line.from === null) {
+              temp_colors_object.line.from = this.random_bg_color()
+            }
+            this.draw_point_mark(temp_marker_object.from, temp_colors_object.line.from, timeout, temp_line_name)
+            return_info.active = true
+          }
+        } else {
+          if ((typeof(return_info.from) === 'object')) {
+            return_info.active = true
+            return_info.from_result = true
+          }
         }
       }
     } catch (err) {
@@ -608,7 +644,7 @@ class qb_raven_map {
       to: null
     }
     try {
-      ['from', 'to'].forEach((item, i) => {
+      for (const item of ['from', 'to']){
         if (marker_object[item]) {
           temp_marker_object[item] = {
             type: 'Feature',
@@ -621,7 +657,7 @@ class qb_raven_map {
             coordinates: [marker_object[item][1], marker_object[item][0]]
           }
         }
-      })
+      }
 
       if (marker.includes('line')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
@@ -635,7 +671,6 @@ class qb_raven_map {
           }
         }
         if (return_info.from_result && return_info.to_result) {
-          // temp_line_name = JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
           temp_line_name = time_temp + '-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
           if (!this.markers_queue.includes(temp_line_name)) {
             if (temp_colors_object.line.from === null) {
@@ -645,13 +680,27 @@ class qb_raven_map {
               temp_colors_object.line.to = this.random_bg_color()
             }
             this.draw_line_mark(temp_marker_object.from, temp_marker_object.to, temp_colors_object.line.from, temp_colors_object.line.to, timeout, temp_line_name)
-            this.markers_queue.push(temp_line_name)
             return_info.active = true
-          } else {
+          }
+        }
+      } else if (marker.includes('point')) {
+        if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
+          if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
+            return_info.from_result = true
+          }
+        }
+        if (return_info.from_result) {
+          temp_line_name = time_temp + '-point-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry])
+          if (!this.markers_queue.includes(temp_line_name)) {
+            if (temp_colors_object.line.from === null) {
+              temp_colors_object.line.from = this.random_bg_color()
+            }
+            this.draw_point_mark(temp_marker_object.from, temp_colors_object.line.from, timeout, temp_line_name)
             return_info.active = true
           }
         }
       }
+
     } catch (err) {
       this.verbose && console.log(err)
     }
@@ -685,22 +734,42 @@ class qb_raven_map {
       .style('fill', this.orginal_country_color)
   }
 
+  draw_point_mark(from, color_from, timeout, temp_name) {
+    try {
+      if ('geometry' in from && !document.hidden) {
+        this.markers_queue.push(temp_name)
+        this.svg.append('path')
+          .attr('class', 'raven-worldmap-point')
+          .datum([from.geometry.coordinates])
+          .attr('d', this.curved_marker)
+          .attr('stroke', color_from)
+          .transition()
+          .duration(timeout)
+          .attr('opacity', 1)
+          .transition()
+          .on('end', () => {
+            const index = this.markers_queue.indexOf(temp_name)
+            if (index > -1) {
+              this.markers_queue.splice(index, 1)
+              this.verbose && console.log(temp_name + ' was removed from markers_queue')
+            }
+          })
+          .duration(timeout)
+          .attr('opacity', 0)
+          .remove()
+      }
+    } catch (err) {
+      this.verbose && console.log(err)
+    }
+  }
+
   draw_line_mark(from, to, color_from, color_to, timeout, temp_name) {
     try {
       if ('geometry' in from && 'geometry' in to && !document.hidden) {
-        this.svg.selectAll(null)
-          .data([
-            [
-              from,
-              to
-            ]
-          ])
-          .enter()
-          .append('path')
+        this.markers_queue.push(temp_name)
+        this.svg.append('path')
           .attr('class', 'raven-worldmap-route')
-          .datum((d) => {
-            return [from.geometry.coordinates, to.geometry.coordinates]
-          })
+          .datum([from.geometry.coordinates, to.geometry.coordinates])
           .attr('d', this.curved_marker)
           .attr('stroke', color_from)
           .attr('stroke-dasharray', function() {
@@ -725,33 +794,6 @@ class qb_raven_map {
     } catch (err) {
       this.verbose && console.log(err)
     }
-
-    /*
-    this.svg.append("circle")
-      .attr("r", 2)
-      .attr('class', 'raven-worldmap-city')
-      .style('fill', city_color)
-      .transition()
-      .on('end', () => {
-        const index = this.markers_queue.indexOf(temp_name)
-        if (index > -1) {
-          this.verbose && this.markers_queue.splice(index, 1)
-          console.log(temp_name + ' was removed from markers_queue')
-        }
-        route.remove()
-      })
-      .duration(timeout)
-      .tween("route", () => {
-        return function(t) {
-          let current_point = route.node().getPointAtLength(d3.interpolate(0, route.node().getTotalLength())(t));
-          d3.select(this)
-            .attr("cy", current_point.y)
-            .attr("cx", current_point.x)
-        }
-      })
-      .remove()
-
-      */
   }
 
   filter_by_ip(in_array = [], ip = '') {
@@ -792,7 +834,6 @@ class qb_raven_map {
 
   filter_by_key_value(in_array = [], query = {}) {
     try {
-      // console.log('>>>> arra >>>',in_array[194])
       const out_array = in_array.filter(item => {
         return Object.keys(query).every(filter => {
           return query[filter].toLowerCase() === item[filter].toLowerCase()
@@ -1073,7 +1114,7 @@ class qb_raven_map {
       $('body').on('click', '.taskbar-panel-body #random', () => {
         $('#raven-random-panel').dialog('open')
         this.disable_enable_item_taskbar(false, 'random')
-        $('#raven-random-text').val('1000')
+        $('#raven-random-text').val('25')
         $('#raven-random-timeout').val('1000')
         $('#raven-random-delay').val('500')
       })
@@ -1400,11 +1441,11 @@ class qb_raven_map {
 
     try {
       if (method === 'name') {
-        attack_event = this.add_marker_by_name(object, color, timeout, ['line'])
+        attack_event = this.add_marker_by_name(object, color, timeout, options)
       } else if (method === 'ip') {
-        attack_event = this.add_marker_by_ip(object, color, timeout, ['line'])
+        attack_event = this.add_marker_by_ip(object, color, timeout, options)
       } else if (method === 'coordinates') {
-        attack_event = this.add_marker_by_coordinates(object, color, timeout, ['line'])
+        attack_event = this.add_marker_by_coordinates(object, color, timeout, options)
       }
 
       if ('active' in attack_event) {
@@ -1474,22 +1515,32 @@ class qb_raven_map {
             }
           })
 
-          if (options.includes('multi-output')) {
-            $('#raven-multi-output-panel-body-table').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info">' + temp_item.to.info.join('<br>') + '</div></div>')
+          if (attack_event.from_result && attack_event.to_result) {
+            if (options.includes('multi-output')) {
+              $('#raven-multi-output-panel-body-table').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info">' + temp_item.to.info.join('<br>') + '</div></div>')
+            }
+            if (options.includes('single-output')) {
+              $('#raven-single-output-panel-body').html('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info-full-width">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info-full-width">' + temp_item.to.info.join('<br>') + '</div></div>')
+            }
           }
-
-          if (options.includes('single-output')) {
-            $('#raven-single-output-panel-body').html('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info-full-width">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info-full-width">' + temp_item.to.info.join('<br>') + '</div></div>')
+          else if (attack_event.from_result && !attack_event.to_result) {
+            if (options.includes('multi-output')) {
+              $('#raven-multi-output-panel-body-table').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div></div>')
+            }
+            if (options.includes('single-output')) {
+              $('#raven-single-output-panel-body').html('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info-full-width">' + temp_item.from.info.join('<br>') + '</div></div>')
+            }
           }
 
           if (typeof attack_event.from === 'object' && attack_event.from !== null && typeof attack_event.to === 'object' && attack_event.to !== null) {
             if ('n' in attack_event.from && 'n' in attack_event.to) {
               if (attack_event.from.n !== '' && attack_event.to.n !== '') {
-                this.add_to_db(attack_event.from.cc + ',' + attack_event.to.cc)
+                //this.add_to_db(attack_event.from.cc + ',' + attack_event.to.cc)
                 ret_value = true
               }
             }
           }
+
         } else {
           this.verbose && console.log('Something wrong..', attack_event)
         }
@@ -1501,7 +1552,7 @@ class qb_raven_map {
     return ret_value
   }
 
-  fetch_data_from_server(){
+  fetch_data_from_server() {
     var is_socket_open = false
     var fetch_data_from_server_routine = () => {
       var wb = new WebSocket(this.websocket.server)
@@ -1511,25 +1562,20 @@ class qb_raven_map {
           resolve(is_socket_open)
         }
         wb.onmessage = (e) => {
-          try{
+          try {
             const parsed = JSON.parse(e.data);
             parsed.forEach((item, i) => {
-              if (item['function'] == 'table'){
-                this.add_to_data_to_table(item['method'],item['object'],item['color'],item['timeout'],item['options'])
-              }
-              else if (item['function'] == 'marker' && item['method'] == 'ip'){
-                this.add_marker_by_ip(item['object'],item['color'],item['timeout'],item['options'])
-              }
-              else if (item['function'] == 'marker' && item['method'] == 'name'){
-                this.add_marker_by_name(item['object'],item['color'],item['timeout'],item['options'])
-              }
-              else if (item['function'] == 'marker' && item['method'] == 'coordinates'){
-                this.add_marker_by_coordinates(item['object'],item['color'],item['timeout'],item['options'])
+              if (item['function'] == 'table') {
+                this.add_to_data_to_table(item['method'], item['object'], item['color'], item['timeout'], item['options'])
+              } else if (item['function'] == 'marker' && item['method'] == 'ip') {
+                this.add_marker_by_ip(item['object'], item['color'], item['timeout'], item['options'])
+              } else if (item['function'] == 'marker' && item['method'] == 'name') {
+                this.add_marker_by_name(item['object'], item['color'], item['timeout'], item['options'])
+              } else if (item['function'] == 'marker' && item['method'] == 'coordinates') {
+                this.add_marker_by_coordinates(item['object'], item['color'], item['timeout'], item['options'])
               }
             });
-          }
-          catch(err)
-          {
+          } catch (err) {
             this.verbose && console.log(err)
           }
         }
