@@ -7,9 +7,13 @@
 //  -------------------------------------------------------------
 //  contributors list qeeqbox/raven/graphs/contributors
 //  -------------------------------------------------------------
-
+//      "browser": true,
+//      "commonjs": true,
+//      "jquery": true
 //{disable_obfuscation_compression_all}//
 //{disable_obfuscation_start}//
+
+
 class qb_raven_map {
   constructor(svg_id) {
     this.svg_id = svg_id
@@ -175,74 +179,78 @@ class qb_raven_map {
   async fetch_data() {
     this.verbose && console.log('Fetch countries and cities')
     await Promise.all([
-      this.qb_world_countries = (topojson.feature(qb_world_countries, qb_world_countries.objects.countries).features).filter(obj => !this.remove_countries.includes(obj.properties.cc)),
-      this.qb_world_cities = qb_world_cities,
-      this.qb_private_ips_codes = qb_private_ips_codes,
-      this.qb_countries_codes = qb_countries_codes,
-      this.qb_companies_codes = qb_companies_codes,
-      this.qb_ports_codes = qb_ports_codes,
-      this.qb_ips_codes = qb_ips_codes
-    ])
-    if (this.qb_countries_codes && qb_ips_codes && this.qb_world_countries) {
-      this.draw()
-    } else {
-      this.verbose && console.log('qb_world_countries, this.qb_world_cities, this.qb_countries_codes, and qb_ips_codes modules are needed')
-    }
+        this.qb_world_countries = (topojson.feature(qb_world_countries, qb_world_countries.objects.countries).features).filter(obj => !this.remove_countries.includes(obj.properties.cc)),
+        this.qb_world_cities = qb_world_cities,
+        this.qb_private_ips_codes = qb_private_ips_codes,
+        this.qb_countries_codes = qb_countries_codes,
+        this.qb_companies_codes = qb_companies_codes,
+        this.qb_ports_codes = qb_ports_codes,
+        this.qb_ips_codes = qb_ips_codes
+      ]).then(() => {
+        if (this.qb_countries_codes && qb_ips_codes && this.qb_world_countries) {
+          this.draw()
+        } else {
+          this.verbose && console.log('qb_world_countries, this.qb_world_cities, this.qb_countries_codes, and qb_ips_codes modules are needed')
+        }
+      })
+      .catch(error => this.verbose && console.log(error));
   }
 
   async load_scripts() {
-    await new Promise(async (resolve, reject) => {
-      var loaded = []
-      var dobule_check = []
-      var good = false
-      var scripts = ['qb_world_countries', 'qb_companies_codes', 'qb_countries_codes', 'qb_ips_codes', 'qb_world_cities', 'qb_ports_codes']
-      var filtered = scripts.filter(item => !this.disable.includes(item))
-      const delay = x => new Promise(y => setTimeout(y, x))
-      filtered.forEach((item, i) => {
-        try {
-          if (typeof(window[item]) === "undefined" && !loaded.includes(item)) {
-            this.spinner_on_off(true, '[!] Loading: ' + item)
-            $.holdReady(true);
-            $.getScript(this.location + '/' + item + '.js', function() {
-              $.holdReady(false);
-              loaded.push(item)
-            });
-          }
-        } catch {}
-      });
-
-      while (true) {
-        if (loaded.sort().toString() == filtered.sort().toString()) {
-          filtered.forEach((item, i) => {
-            if (typeof([item]) !== "undefined") {
-              this.spinner_on_off(true, '[!] Loaded: ' + item)
-              dobule_check.push(item)
-            }
+    var loaded = []
+    var filtered = ['qb_world_countries', 'qb_companies_codes', 'qb_countries_codes', 'qb_ips_codes', 'qb_world_cities', 'qb_ports_codes'].filter(item => !this.disable.includes(item))
+    new Promise(() => {
+      filtered.forEach((item) => {
+        if (typeof(window[item]) === "undefined" && !loaded.includes(item)) {
+          this.spinner_on_off(true, '[!] Loading: ' + item)
+          $.holdReady(true);
+          $.getScript(this.location + '/' + item + '.js', function() {
+            $.holdReady(false);
+            loaded.push(item)
           });
-
-          if (dobule_check.sort().toString() == filtered.sort().toString()) {
-            if (this.disable.includes('qb_companies_codes')) {
-              window['qb_companies_codes'] = []
-            }
-            if (this.disable.includes('qb_countries_codes')) {
-              window['qb_countries_codes'] = {}
-            }
-            if (this.disable.includes('qb_ips_codes')) {
-              window['qb_private_ips_codes'] = []
-              window['qb_ips_codes'] = []
-            }
-            if (this.disable.includes('qb_ports_codes')) {
-              window['qb_ports_codes'] = []
-            }
-            if (this.disable.includes('qb_world_cities')) {
-              window['qb_world_cities'] = {}
-            }
-            return resolve()
-          }
         }
-        await delay(250);
+      })}).catch(error => this.verbose && console.log(error));
+
+      let wait_until_scripts_loaded = () => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            var dobule_check = []
+            if (loaded.sort().toString() == filtered.sort().toString()) {
+              filtered.forEach((item) => {
+                if (typeof([item]) !== "undefined") {
+                  this.spinner_on_off(true, '[!] Loaded: ' + item)
+                  dobule_check.push(item)
+                }
+              });
+
+              if (dobule_check.sort().toString() == filtered.sort().toString()) {
+                if (this.disable.includes('qb_companies_codes')) {
+                  window['qb_companies_codes'] = []
+                }
+                if (this.disable.includes('qb_countries_codes')) {
+                  window['qb_countries_codes'] = {}
+                }
+                if (this.disable.includes('qb_ips_codes')) {
+                  window['qb_private_ips_codes'] = []
+                  window['qb_ips_codes'] = []
+                }
+                if (this.disable.includes('qb_ports_codes')) {
+                  window['qb_ports_codes'] = []
+                }
+                if (this.disable.includes('qb_world_cities')) {
+                  window['qb_world_cities'] = {}
+                }
+                return resolve()
+              }
+            } else {
+              reject()
+            }
+          }, 100);
+        }).catch(() => wait_until_scripts_loaded());
       }
-    });
+
+      await wait_until_scripts_loaded()
+      return 1
   }
 
   draw() {
@@ -396,7 +404,7 @@ class qb_raven_map {
       to: null
     }
     try {
-      for (const item of ['from', 'to']){
+      for (const item of ['from', 'to']) {
         if (marker_object[item]) {
           if (marker_object[item] in this.qb_world_cities) {
             temp_marker_object[item] = this.qb_world_cities[marker_object[item]]
@@ -508,7 +516,7 @@ class qb_raven_map {
       to: null
     }
     try {
-      for (const item of ['from', 'to']){
+      for (const item of ['from', 'to']) {
         if (marker_object[item]) {
           let ip_address_and_port = marker_object[item].split(':')
           temp_marker_object[item] = this.filter_by_ip(qb_ips_codes, ip_address_and_port[0])
@@ -644,7 +652,7 @@ class qb_raven_map {
       to: null
     }
     try {
-      for (const item of ['from', 'to']){
+      for (const item of ['from', 'to']) {
         if (marker_object[item]) {
           temp_marker_object[item] = {
             type: 'Feature',
@@ -1286,7 +1294,7 @@ class qb_raven_map {
         })
       }
     } catch (err) {
-
+      this.verbose && console.log(err)
     }
   }
 
@@ -1351,9 +1359,8 @@ class qb_raven_map {
       result = Object.entries(result).sort(function(a, b) {
         return b[1] - a[1]
       })
-      result.forEach((item, i) => {
+      result.forEach((item) => {
         const attack_event = item[0].split(',')
-        const temp_item = []
         if (attack_event[0] === cc) {
           if (sorted_results.targets.length < stats_limit) {
             if (attack_event[0] in this.qb_countries_codes) {
@@ -1378,14 +1385,14 @@ class qb_raven_map {
         }
       });
 
-      ['targets', 'origins'].forEach((_type, i) => {
+      ['targets', 'origins'].forEach((_type) => {
         if (_type === 'targets') {
           $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-header"> Top (' + stats_limit + ') attacks from ' + cc.toUpperCase() + ' to ?</div>')
         } else {
           $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-header"> Top (' + stats_limit + ') attacks from ? to ' + cc.toUpperCase() + '</div>')
         }
 
-        sorted_results[_type].forEach((attack_event, i) => {
+        sorted_results[_type].forEach((attack_event) => {
           const temp_item = {
             flag: this.unknown_flag,
             info: []
@@ -1424,7 +1431,7 @@ class qb_raven_map {
         })
       })
     } else {
-      ['targets', 'origins'].forEach((_type, i) => {
+      ['targets', 'origins'].forEach((_type) => {
         if (_type === 'targets') {
           $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-country"> There are no attacks from ' + cc.toUpperCase() + ' to ?</div>')
         } else {
@@ -1437,8 +1444,6 @@ class qb_raven_map {
   add_to_data_to_table(method, object, color, timeout, options = []) {
     let ret_value = false
     let attack_event = {}
-    const check_show = 0
-
     try {
       if (method === 'name') {
         attack_event = this.add_marker_by_name(object, color, timeout, options)
@@ -1468,7 +1473,7 @@ class qb_raven_map {
             }
           }
 
-          ['from', 'to'].forEach((item, i) => {
+          ['from', 'to'].forEach((item) => {
             if (typeof attack_event[item] === 'object' && attack_event[item] !== null) {
               if ('f' in attack_event[item]) {
                 if (attack_event[item].f !== '') {
@@ -1522,8 +1527,7 @@ class qb_raven_map {
             if (options.includes('single-output')) {
               $('#raven-single-output-panel-body').html('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info-full-width">' + temp_item.from.info.join('<br>') + '</div><div class="action">' + action + '</div><div class="country-flag">' + temp_item.to.flag + '</div><div class="country-info-full-width">' + temp_item.to.info.join('<br>') + '</div></div>')
             }
-          }
-          else if (attack_event.from_result && !attack_event.to_result) {
+          } else if (attack_event.from_result && !attack_event.to_result) {
             if (options.includes('multi-output')) {
               $('#raven-multi-output-panel-body-table').append('<div class="country-row"><div class="time">' + attack_event.time + '</div><div class="country-flag">' + temp_item.from.flag + '</div><div class="country-info">' + temp_item.from.info.join('<br>') + '</div></div>')
             }
@@ -1557,14 +1561,14 @@ class qb_raven_map {
     var fetch_data_from_server_routine = () => {
       var wb = new WebSocket(this.websocket.server)
       return new Promise((resolve, reject) => {
-        wb.onopen = (e) => {
+        wb.onopen = () => {
           is_socket_open = true
           resolve(is_socket_open)
         }
         wb.onmessage = (e) => {
           try {
             const parsed = JSON.parse(e.data);
-            parsed.forEach((item, i) => {
+            parsed.forEach((item) => {
               if (item['function'] == 'table') {
                 this.add_to_data_to_table(item['method'], item['object'], item['color'], item['timeout'], item['options'])
               } else if (item['function'] == 'marker' && item['method'] == 'ip') {

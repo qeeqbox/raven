@@ -55,7 +55,7 @@
         'location': 'scripts',
         'panels': ['single-output'],
         'disable': ['multi-output','tooltip', 'random', 'insert','taskbar','move_to_country'],
-        'websocket':{'server':'ws://0.0.0.0:5678',
+        'websocket':{'server':'ws://'+window.location.hostname+':5678',
                       'request_timeout':3000},
         'verbose': false
       }
