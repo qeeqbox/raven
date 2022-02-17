@@ -48,16 +48,15 @@
         'orginal_country_color': '#737373',
         'clicked_country_color': '#6c4242',
         'selected_country_color': '#ff726f',
-        'attack_output': true,
         'global_timeout': 2000,
         'global_stats_limit': 10,
         'db_length': 1000,
         'location': 'scripts',
-        'panels': ['multi-output', 'single-output','tooltip', 'random', 'insert','taskbar'],
+        'panels': ['multi-output', 'single-output','tooltip', 'random', 'insert','taskbar','logo'],
         'disable': [],
         'websocket':{'server':'ws://'+window.location.hostname+':5678',
                       'request_timeout':3000},
-        'verbose': false
+        'verbose': true
       }
 
       window['raven'] = document.getElementById('raven-iframe').contentWindow.raven

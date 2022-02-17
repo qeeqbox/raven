@@ -31,7 +31,6 @@ class qb_raven_map {
     this.backup_country_color = options.orginal_country_color
     this.clicked_country_color = options.clicked_country_color
     this.selected_country_color = options.selected_country_color
-    this.attack_output = options.attack_output
     this.global_timeout = options.global_timeout
     this.global_stats_limit = options.global_stats_limit
     this.db_length = options.db_length
@@ -54,6 +53,7 @@ class qb_raven_map {
   }
 
   async init_world() {
+    this.spinner_on_off(true, '[!] Initializing..')
     await this.load_scripts()
 
     $.fn.is_partially_visible = function() {
@@ -209,48 +209,49 @@ class qb_raven_map {
             loaded.push(item)
           });
         }
-      })}).catch(error => this.verbose && console.log(error));
+      })
+    }).catch(error => this.verbose && console.log(error));
 
-      let wait_until_scripts_loaded = () => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            var dobule_check = []
-            if (loaded.sort().toString() == filtered.sort().toString()) {
-              filtered.forEach((item) => {
-                if (typeof([item]) !== "undefined") {
-                  this.spinner_on_off(true, '[!] Loaded: ' + item)
-                  dobule_check.push(item)
-                }
-              });
-
-              if (dobule_check.sort().toString() == filtered.sort().toString()) {
-                if (this.disable.includes('qb_companies_codes')) {
-                  window['qb_companies_codes'] = []
-                }
-                if (this.disable.includes('qb_countries_codes')) {
-                  window['qb_countries_codes'] = {}
-                }
-                if (this.disable.includes('qb_ips_codes')) {
-                  window['qb_private_ips_codes'] = []
-                  window['qb_ips_codes'] = []
-                }
-                if (this.disable.includes('qb_ports_codes')) {
-                  window['qb_ports_codes'] = []
-                }
-                if (this.disable.includes('qb_world_cities')) {
-                  window['qb_world_cities'] = {}
-                }
-                return resolve()
+    let wait_until_scripts_loaded = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          var dobule_check = []
+          if (loaded.sort().toString() == filtered.sort().toString()) {
+            filtered.forEach((item) => {
+              if (typeof([item]) !== "undefined") {
+                this.spinner_on_off(true, '[!] Loaded: ' + item)
+                dobule_check.push(item)
               }
-            } else {
-              reject()
-            }
-          }, 100);
-        }).catch(() => wait_until_scripts_loaded());
-      }
+            });
 
-      await wait_until_scripts_loaded()
-      return 1
+            if (dobule_check.sort().toString() == filtered.sort().toString()) {
+              if (this.disable.includes('qb_companies_codes')) {
+                window['qb_companies_codes'] = []
+              }
+              if (this.disable.includes('qb_countries_codes')) {
+                window['qb_countries_codes'] = {}
+              }
+              if (this.disable.includes('qb_ips_codes')) {
+                window['qb_private_ips_codes'] = []
+                window['qb_ips_codes'] = []
+              }
+              if (this.disable.includes('qb_ports_codes')) {
+                window['qb_ports_codes'] = []
+              }
+              if (this.disable.includes('qb_world_cities')) {
+                window['qb_world_cities'] = {}
+              }
+              return resolve()
+            }
+          } else {
+            reject()
+          }
+        }, 100);
+      }).catch(() => wait_until_scripts_loaded());
+    }
+
+    await wait_until_scripts_loaded()
+    return 1
   }
 
   draw() {
@@ -386,7 +387,7 @@ class qb_raven_map {
     return [null, null]
   }
 
-  add_marker_by_name(marker_object, colors_object = {}, timeout = 5000, marker = []) {
+  add_marker_by_name(marker_object, colors_object = {}, timeout = 5000, options = []) {
     const time_temp = this.current_time()
     const temp_colors_object = JSON.parse(JSON.stringify(colors_object))
     let temp_line_name = null
@@ -406,7 +407,22 @@ class qb_raven_map {
     try {
       for (const item of ['from', 'to']) {
         if (marker_object[item]) {
-          if (marker_object[item] in this.qb_world_cities) {
+          if (marker_object[item].indexOf(',') == -1) {
+            if (marker_object[item] in this.qb_countries_codes) {
+              temp_marker_object[item] = this.qb_countries_codes[marker_object[item]]
+              return_info[item] = temp_marker_object[item]
+              temp_marker_object[item] = this.qb_world_countries.find(obj => obj.properties.cc === temp_marker_object[item].cc)
+              temp_marker_object[item] = d3.geoCentroid(temp_marker_object[item])
+              temp_marker_object[item] = {
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [temp_marker_object[item][0], temp_marker_object[item][1]]
+                }
+              }
+              return_info[item + '_method'] = 'country'
+            }
+          } else if (marker_object[item] in this.qb_world_cities) {
             temp_marker_object[item] = this.qb_world_cities[marker_object[item]]
             if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item] !== null) {
               if (temp_marker_object[item].properties.cc in this.qb_countries_codes) {
@@ -437,7 +453,7 @@ class qb_raven_map {
         }
       }
 
-      if (marker.includes('line')) {
+      if (options.includes('line')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
           if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
             return_info.from_result = true
@@ -463,7 +479,7 @@ class qb_raven_map {
             return_info.active = true
           }
         }
-      } else if (marker.includes('point')) {
+      } else if (options.includes('point')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
           if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
             return_info.from_result = true
@@ -497,7 +513,7 @@ class qb_raven_map {
     return return_info
   }
 
-  add_marker_by_ip(marker_object, colors_object = {}, timeout = 5000, marker = []) {
+  add_marker_by_ip(marker_object, colors_object = {}, timeout = 5000, options = []) {
     const time_temp = this.current_time()
     const temp_colors_object = JSON.parse(JSON.stringify(colors_object))
     let temp_ip_info = []
@@ -568,7 +584,7 @@ class qb_raven_map {
         }
       }
 
-      if (marker.includes('line')) {
+      if (options.includes('line')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
           if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
             return_info.from_result = true
@@ -599,7 +615,7 @@ class qb_raven_map {
             return_info.to_result = true
           }
         }
-      } else if (marker.includes('point')) {
+      } else if (options.includes('point')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
           if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
             return_info.from_result = true
@@ -636,7 +652,7 @@ class qb_raven_map {
     return return_info
   }
 
-  add_marker_by_coordinates(marker_object, colors_object = {}, timeout = 5000, marker = []) {
+  add_marker_by_coordinates(marker_object, colors_object = {}, timeout = 5000, options = []) {
     const time_temp = this.current_time()
     const temp_colors_object = JSON.parse(JSON.stringify(colors_object))
     let temp_line_name = null
@@ -654,6 +670,16 @@ class qb_raven_map {
     try {
       for (const item of ['from', 'to']) {
         if (marker_object[item]) {
+
+          if (options.includes('country-by-coordinate')) {
+            let country = this.get_country_by_coordinate(marker_object[item][0], marker_object[item][1])
+            if (country !== undefined) {
+              if (country in this.qb_countries_codes) {
+                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[country]))
+              }
+            }
+          }
+
           temp_marker_object[item] = {
             type: 'Feature',
             geometry: {
@@ -661,13 +687,18 @@ class qb_raven_map {
               coordinates: [marker_object[item][1], marker_object[item][0]]
             }
           }
-          return_info[item] = {
-            coordinates: [marker_object[item][1], marker_object[item][0]]
+
+          if (return_info[item] == null) {
+            return_info[item] = {
+              coordinates: [marker_object[item][1], marker_object[item][0]]
+            }
+          } else {
+            return_info[item]['coordinates'] = [marker_object[item][1], marker_object[item][0]]
           }
         }
       }
 
-      if (marker.includes('line')) {
+      if (options.includes('line')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
           if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
             return_info.from_result = true
@@ -691,7 +722,7 @@ class qb_raven_map {
             return_info.active = true
           }
         }
-      } else if (marker.includes('point')) {
+      } else if (options.includes('point')) {
         if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
           if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
             return_info.from_result = true
@@ -853,6 +884,30 @@ class qb_raven_map {
       this.verbose && console.log(err)
     }
     return null
+  }
+
+  get_country_by_coordinate(lat, lon) {
+    var country = undefined
+    this.qb_world_countries.some(function(feature) {
+      if (feature.geometry.type == "MultiPolygon") {
+        return feature.geometry.coordinates.some(function(polygon) {
+          return polygon.some(function(pol) {
+            let ret = false
+            for (let i = 0, l = pol.length - 1; i < pol.length; l = i++) {
+              if (((pol[i][1] > lat) != (pol[l][1] > lat)) && (lon < (pol[l][0] - pol[i][0]) * (lat - pol[i][1]) / (pol[l][1] - pol[i][1]) + pol[i][0])) {
+                ret = !ret
+              }
+            }
+            if (ret) {
+              country = feature.properties.cc
+            }
+            return ret
+          })
+        })
+      }
+    })
+
+    return country
   }
 
   random_bg_color() {
@@ -1188,6 +1243,11 @@ class qb_raven_map {
       //this.disable_enable_item_taskbar(true, 'single-output')
       this.disable_enable_item_taskbar(true, 'multi-output')
       this.disable_enable_item_taskbar(true, 'insert')
+
+      if (!this.panels.includes('logo')) {
+        $('#qeeqbox-logo').remove();
+        $('#qeeqbox-logo-separator').remove();
+      }
     }
   }
 
@@ -1441,7 +1501,7 @@ class qb_raven_map {
     }
   }
 
-  add_to_data_to_table(method, object, color, timeout, options = []) {
+  add_to_data_to_table(method, object, color, timeout, options = [], custom = null) {
     let ret_value = false
     let attack_event = {}
     try {
@@ -1474,48 +1534,58 @@ class qb_raven_map {
           }
 
           ['from', 'to'].forEach((item) => {
+            let normal = true
             if (typeof attack_event[item] === 'object' && attack_event[item] !== null) {
               if ('f' in attack_event[item]) {
                 if (attack_event[item].f !== '') {
                   temp_item[item].flag = '<img src="data:image/png;base64,' + attack_event[item].f + '"/>'
                 }
               }
-              if ('ip' in attack_event[item]) {
-                if (attack_event[item].ip !== '') {
-                  temp_item[item].info.push('IP: ' + attack_event[item].ip)
+              if (custom) {
+                if (custom[item]) {
+                  normal = false
+                  for (const [key, value] of Object.entries(custom[item])) {
+                    temp_item[item].info.push(key + ': ' + value)
+                  }
                 }
               }
-              if ('i' in attack_event[item]) {
-                if (attack_event[item].i !== '') {
-                  temp_item[item].info.push('Private IP: ' + attack_event[item].i)
+              if (normal) {
+                if ('ip' in attack_event[item]) {
+                  if (attack_event[item].ip !== '') {
+                    temp_item[item].info.push('IP: ' + attack_event[item].ip)
+                  }
                 }
-              }
-              if ('p' in attack_event[item]) {
-                temp_item[item].info.push('Port info: ' + attack_event[item].p.n + ' ' + attack_event[item].p.p + '/' + attack_event[item].p.t)
-              }
-              if ('co' in attack_event[item]) {
-                if (attack_event[item].co !== '') {
-                  temp_item[item].info.push('Whois: ' + attack_event[item].co)
+                if ('i' in attack_event[item]) {
+                  if (attack_event[item].i !== '') {
+                    temp_item[item].info.push('Private IP: ' + attack_event[item].i)
+                  }
                 }
-              }
-              if ('c' in attack_event[item]) {
-                if (attack_event[item].c !== '') {
-                  temp_item[item].info.push('City: ' + attack_event[item].c)
+                if ('p' in attack_event[item]) {
+                  temp_item[item].info.push('Port info: ' + attack_event[item].p.n + ' ' + attack_event[item].p.p + '/' + attack_event[item].p.t)
                 }
-              }
-              if ('n' in attack_event[item]) {
-                if (attack_event[item].n !== '') {
-                  temp_item[item].info.push('Country: ' + attack_event[item].n)
+                if ('co' in attack_event[item]) {
+                  if (attack_event[item].co !== '') {
+                    temp_item[item].info.push('Whois: ' + attack_event[item].co)
+                  }
                 }
-              }
-              if ('coordinates' in attack_event[item]) {
-                if (attack_event[item].coordinates.length == 2) {
-                  temp_item[item].info.push('Latitude: ' + attack_event[item].coordinates[0])
-                  temp_item[item].info.push('Longitude: ' + attack_event[item].coordinates[1])
+                if ('c' in attack_event[item]) {
+                  if (attack_event[item].c !== '') {
+                    temp_item[item].info.push('City: ' + attack_event[item].c)
+                  }
+                }
+                if ('n' in attack_event[item]) {
+                  if (attack_event[item].n !== '') {
+                    temp_item[item].info.push('Country: ' + attack_event[item].n)
+                  }
+                }
+                if ('coordinates' in attack_event[item]) {
+                  if (attack_event[item].coordinates.length == 2) {
+                    temp_item[item].info.push('Latitude: ' + attack_event[item].coordinates[0])
+                    temp_item[item].info.push('Longitude: ' + attack_event[item].coordinates[1])
+                  }
                 }
               }
             } else {
-              temp_item[item].flag = '?'
               temp_item[item].info.push('Unknown: ' + attack_event[item])
             }
           })
@@ -1570,7 +1640,7 @@ class qb_raven_map {
             const parsed = JSON.parse(e.data);
             parsed.forEach((item) => {
               if (item['function'] == 'table') {
-                this.add_to_data_to_table(item['method'], item['object'], item['color'], item['timeout'], item['options'])
+                this.add_to_data_to_table(item['method'], item['object'], item['color'], item['timeout'], item['options'], item['custom'])
               } else if (item['function'] == 'marker' && item['method'] == 'ip') {
                 this.add_marker_by_ip(item['object'], item['color'], item['timeout'], item['options'])
               } else if (item['function'] == 'marker' && item['method'] == 'name') {
@@ -1603,12 +1673,12 @@ class qb_raven_map {
 
   async random_data(m, timeout, delay, type_of_data) {
     $('#raven-multi-output-panel-body-table').html('')
-    const max_len_world_cities = this.disable.includes('cities') ? 0 : Object.keys(this.qb_world_cities).length;
+    const max_len_world_cities = Object.keys(this.qb_world_cities).length;
     const max_len_world_countries = this.qb_world_countries.length
     const type_of_data_length = type_of_data.length
     const random_ports = ['20', '21', '22', '23', '25', '53', '80', '110', '123', '443', '3389', '5900']
     for (let i = 0; i < m; i++) {
-      if (this.attack_output && !this.global_lock) {
+      if (!this.global_lock) {
         let from = null
         let to = null
         const random_value = type_of_data[Math.floor(Math.random() * type_of_data_length)]
@@ -1631,7 +1701,7 @@ class qb_raven_map {
               }
             }, timeout, ['line', 'multi-output', 'single-output'])
           }
-        } else if (random_value === 'Cities' && !this.disable.includes('cities')) {
+        } else if (random_value === 'Cities') {
           const from = Object.keys(this.qb_world_cities)[Math.floor(Math.random() * max_len_world_cities)]
           const to = Object.keys(this.qb_world_cities)[Math.floor(Math.random() * max_len_world_cities)]
           if (from && to && from !== to) {
