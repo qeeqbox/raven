@@ -888,6 +888,8 @@ class qb_raven_map {
 
   get_country_by_coordinate(lat, lon) {
     var country = undefined
+    var lat = parseFloat(lat)
+    var lon = parseFloat(lon)
     this.qb_world_countries.some(function(feature) {
       if (feature.geometry.type == "MultiPolygon") {
         return feature.geometry.coordinates.some(function(polygon) {
