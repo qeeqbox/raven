@@ -26,7 +26,7 @@ class WebSocketHandler(websocket.WebSocketHandler):
 					if message["data"] == b"STOP":
 						break
 					await self.write_message(message['data'])
-				await gen.sleep(0.1)
+				await gen.sleep(1)
 		await pubsub.unsubscribe("alerts")
 		await pub_redis.close()
 
