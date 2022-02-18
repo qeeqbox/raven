@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+
+"""
+//  -------------------------------------------------------------
+//  author        Giga
+//  project       qeeqbox/raven
+//  email         gigaqeeq@gmail.com
+//  description   tornado, websockets and redis (minimal)
+//  licensee      AGPL-3.0
+//  -------------------------------------------------------------
+//  contributors list qeeqbox/raven/graphs/contributors
+//  -------------------------------------------------------------
+"""
+
 from os import path
 from random import randint
 from websockets import client, serve
