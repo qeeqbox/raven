@@ -25,7 +25,7 @@ def get_nested_item(_dict, item, defualt=None):
     return reduce(get_item, item.split('.'), _dict)
 
 ES = Elasticsearch('127.0.0.1:64298')
-RE = Redis(host='192.168.56.1', port=6379)
+RE = Redis(host='0.0.0.0', port=6379)
 current_time = datetime.utcnow().isoformat()
 
 while True:
