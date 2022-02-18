@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <link rel="icon" type="image/png" href="https://qeeqbox.com/images/icon.png" />
+  <title>Raven Example</title>
+  <style type="text/css">
+    html {
+      overflow: auto;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      border: none;
+    }
+
+    iframe {
+      height: 100%;
+      width: 100%;
+      margin: 0px;
+      padding: 0px;
+      display: block;
+      border: none;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <iframe id="raven-iframe" src="src/raven.html" frameborder="0" width="100%" height="100%" scrolling="auto"></iframe>
+  <script type="text/javascript">
+
+    document.getElementById('raven-iframe').addEventListener("load", function() {
+
+      var raven_options = {
+        'world_type': null,
+        'selected_countries': [],
+        'remove_countries': ['aq'],
+        'height': window.innerHeight,
+        'width': window.innerWidth,
+        'backup_background_color': '#212222',
+        'orginal_country_color': '#737373',
+        'clicked_country_color': '#6c4242',
+        'selected_country_color': '#ff726f',
+        'global_timeout': 2000,
+        'global_stats_limit': 10,
+        'db_length': 1000,
+        'location': 'scripts',
+        'panels': ['single-output','multi-output','taskbar'],
+        'disable': ['multi-output','tooltip', 'random', 'insert','taskbar','move_to_country','qb_companies_codes', 'qb_ips_codes', 'qb_world_cities', 'qb_ports_codes'],
+        'websocket':{'server':'ws://192.168.56.1:4751/websocket',
+                      'request_timeout':3000},
+        'verbose': false
+      }
+
+      window['raven'] = document.getElementById('raven-iframe').contentWindow.raven
+      window['raven'].init_all(raven_options)
+      window['raven'].init_world()
+      window['raven'].fetch_data_from_server()
+      //'disable': ['multi-output', 'single-output','tooltip', 'random', 'insert','taskbar','move_to_country'],
+
+    });
+
+  </script>
+</body>
+
+</html>
