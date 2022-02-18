@@ -1,5 +1,16 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
+"""
+//  -------------------------------------------------------------
+//  author        Giga
+//  project       qeeqbox/raven
+//  email         gigaqeeq@gmail.com
+//  description   send events from tpot to redis
+//  licensee      AGPL-3.0
+//  -------------------------------------------------------------
+//  contributors list qeeqbox/raven/graphs/contributors
+//  -------------------------------------------------------------
+"""
 
 from elasticsearch import Elasticsearch
 from datetime import datetime
