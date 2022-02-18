@@ -1,3 +1,18 @@
+#!/usr/bin/env python
+
+"""
+//  -------------------------------------------------------------
+//  author        Giga
+//  project       qeeqbox/raven
+//  email         gigaqeeq@gmail.com
+//  description   asyncio, websockets and http
+//  licensee      AGPL-3.0
+//  -------------------------------------------------------------
+//  contributors list qeeqbox/raven/graphs/contributors
+//  ----
+"""
+
+
 from http import HTTPStatus
 from mimetypes import guess_type
 from urllib.parse import urljoin, urlparse
