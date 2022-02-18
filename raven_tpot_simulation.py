@@ -38,7 +38,7 @@ while True:
     for hit in res['hits']['hits']:
         print(hit)
         to_ = ['12.796803','-85.554174']
-        from_ = [get_nested_item(hit,'_source.geoip_ext.latitude'),get_nested_item(hit, '_source.geoip_ext.longitude')]
+        from_ = [None,None]
         dest_port = get_nested_item(hit, '_source.dest_port')
         _type = get_nested_item(hit, '_source.type')
         if _type == "Log4pot":
