@@ -27,7 +27,7 @@ You have different options `ip`, `name`, and `coordinates`
 
 - `ip`            private or public ip -> any of these IPs -> `0.0.0.0` or `8.8.8.8` as `{'from':'0.0.0.0','to':'8.8.8.8'}`
 - `name`          city,state,country -> any of these formats work -> `seattle,wa,us` or `0,us` as `{'from':'seattle,wa,us','to':'0,in'}`
-- `coordinates`   Latitude and Longitude as `{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']}`
+- `coordinates`   Latitude and Longitude as `{'from'-11.074920','-51.648929'],'to'51.464957','-107.583864']}`
 
 ## Method 1 - Embed it and interact with it
 ```html
@@ -65,7 +65,7 @@ You have different options `ip`, `name`, and `coordinates`
     });
 
     //After that, you can plot any data you want
-    raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
+    raven.add_to_data_to_table({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
 
   </script>
 ```
@@ -86,14 +86,14 @@ options = []                        //A list of options such as animation marker
 ```js
 raven.add_marker_by_name({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line'])
 raven.add_marker_by_ip({'from':'0.0.0.0','to':'0.0.0.0:53'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line'])
-raven.add_marker_by_coordinates({'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line'])
+raven.add_marker_by_coordinates({'from':'-11.074920,-51.648929','to':'51.464957,-107.583864'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line'])
 ```
 
 #### Plotting data (As point)
 ```js
 raven.add_marker_by_name({'from':'portland,or,us','to':null},{'line':{'from':null,'to':null}},2000,['point'])
 raven.add_marker_by_ip({'from':'8.8.8.8','to':null},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['point'])
-raven.add_marker_by_coordinates({'from':['-11.074920','-51.648929'],'to':null},{'line':{'from':null,'to':'#FFFF00'}},1000,['point'])
+raven.add_marker_by_coordinates({'from':'-11.074920,-51.648929','to':null},{'line':{'from':null,'to':'#FFFF00'}},1000,['point'])
 ```
 
 #### Plotting data + adding it to the output table (function)
@@ -109,16 +109,16 @@ options = []                        //A list of options such as animation marker
 
 #### Plotting data + adding it to the output table (As line, from -> to)
 ```js
-raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
-raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
-raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
+raven.add_to_data_to_table({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
+raven.add_to_data_to_table({'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
+raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':'51.464957,-107.583864'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
 ```
 
 #### Plotting data + adding it to the output table (As point)
 ```js
-raven.add_to_data_to_table('name',{'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
-raven.add_to_data_to_table('ip',{'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
-raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to':['51.464957','-107.583864']},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
+raven.add_to_data_to_table({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
+raven.add_to_data_to_table({'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
+raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':'51.464957,-107.583864'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
 ```
 
 ## Method 2 - Embed it, and use websocket for plotting
@@ -190,10 +190,9 @@ raven.add_to_data_to_table('coordinates',{'from':['-11.074920','-51.648929'],'to
 ```json
     {
     "function":"table",
-      "method": "name",
       "object": {
-        "from": "0,us",
-        "to": "0,br"
+        "from": "us",
+        "to": "br"
       },
       "color": {
         "line": {

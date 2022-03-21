@@ -670,7 +670,7 @@ class qb_raven_map {
     try {
       for (const item of ['from', 'to']) {
         if (marker_object[item]) {
-
+          marker_object[item] = marker_object[item].split(",")
           if (options.includes('country-by-coordinate')) {
             let country = this.get_country_by_coordinate(marker_object[item][0], marker_object[item][1])
             if (country !== undefined) {
@@ -1503,16 +1503,20 @@ class qb_raven_map {
     }
   }
 
-  add_to_data_to_table(method, object, color, timeout, options = [], custom = null) {
+  add_to_data_to_table(object, color, timeout, options = [], custom = null) {
     let ret_value = false
     let attack_event = {}
     try {
-      if (method === 'name') {
-        attack_event = this.add_marker_by_name(object, color, timeout, options)
-      } else if (method === 'ip') {
-        attack_event = this.add_marker_by_ip(object, color, timeout, options)
-      } else if (method === 'coordinates') {
-        attack_event = this.add_marker_by_coordinates(object, color, timeout, options)
+      if (typeof(object.from) === 'string' || object.from instanceof String){
+        if (object.from.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) && object.to.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)){
+          attack_event = this.add_marker_by_ip(object, color, timeout, options)
+        }
+        else if (!object.from.match(/\d/) && !object.to.match(/\d/)){
+          attack_event = this.add_marker_by_name(object, color, timeout, options)
+        }
+        else if (object.from.match(/([0-9.-]+).+?([0-9.-]+)/) && object.to.match(/([0-9.-]+).+?([0-9.-]+)/)){
+          attack_event = this.add_marker_by_coordinates(object, color, timeout, options)
+        }
       }
 
       if ('active' in attack_event) {
@@ -1642,13 +1646,20 @@ class qb_raven_map {
             const parsed = JSON.parse(e.data);
             parsed.forEach((item) => {
               if (item['function'] == 'table') {
-                this.add_to_data_to_table(item['method'], item['object'], item['color'], item['timeout'], item['options'], item['custom'])
-              } else if (item['function'] == 'marker' && item['method'] == 'ip') {
-                this.add_marker_by_ip(item['object'], item['color'], item['timeout'], item['options'])
-              } else if (item['function'] == 'marker' && item['method'] == 'name') {
-                this.add_marker_by_name(item['object'], item['color'], item['timeout'], item['options'])
-              } else if (item['function'] == 'marker' && item['method'] == 'coordinates') {
-                this.add_marker_by_coordinates(item['object'], item['color'], item['timeout'], item['options'])
+                this.add_to_data_to_table(item['object'], item['color'], item['timeout'], item['options'], item['custom'])
+              } else if (item['function'] == 'marker') {
+
+                if (typeof(item['object'].from) === 'string' || item['object'].from instanceof String){
+                  if (item['object'].from.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) && item['object'].to.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)){
+                    this.add_marker_by_ip(item['object'], item['color'], item['timeout'], item['options'])
+                  }
+                  else if (!item['object'].from.match(/\d/) && !item['object'].to.match(/\d/)){
+                    this.add_marker_by_name(item['object'], item['color'], item['timeout'], item['options'])
+                  }
+                  else if (item['object'].from.match(/([0-9.-]+).+?([0-9.-]+)/) && item['object'].to.match(/([0-9.-]+).+?([0-9.-]+)/)){
+                    this.add_marker_by_coordinates(item['object'], item['color'], item['timeout'], item['options'])
+                  }
+                }
               }
             });
           } catch (err) {

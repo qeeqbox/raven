@@ -40,7 +40,6 @@ def dummy_request(loop, function=""):
     for index in range(loop):
         parameters = {
     "function":function,
-      "method": "ip",
       "object": {
         "from": "{}".format(dummy_ip()),
         "to": "{}:3389".format(dummy_ip())

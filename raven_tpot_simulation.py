@@ -48,16 +48,16 @@ while True:
 
     for hit in res['hits']['hits']:
         print(hit)
-        to_ = ['12.796803','-85.554174']
+        to_ = '12.796803,-85.554174'
         from_ = [None,None]
         dest_port = get_nested_item(hit, '_source.dest_port')
         _type = get_nested_item(hit, '_source.type')
         if _type == "Log4pot":
             if None in from_:
                 from_ = choice(random_coordinate)
+                from_ = "{},{}".format(from_[0],from_[1])
             RE.publish('alerts',dumps([{
                     'function': 'table',
-                    'method': 'coordinates',
                     'object': {'from': from_, 
                                 'to': to_},
                     'color': {'line': { 'from': '#{:06x}'.format(randint(255,16777216)), 
