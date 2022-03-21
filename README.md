@@ -225,6 +225,7 @@ Then, go to http://localhost:8080/simulation.html
 - If you need help improving your world map or cyber threat map, reach out, and I might be able to help you!
 
 ## Links
+- [13 Top Cyber Threats Live Maps by medevel](https://medevel.com/13-cyber-threats-live-maps/) 
 - [kitploit](https://www.kitploit.com/2022/01/raven-advanced-cyber-threat-map.html)
 
 ## Other Projects
