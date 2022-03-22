@@ -10,6 +10,7 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
 
 ## Features
 - Uses D3.js (Not Anime.js)
+- Plot by gussing feature (Mix name, ip or coordinates)
 - Active threat map (Live and replay)
 - IP, country, city, and port info for each attack
 - Attacks stats for countries (Only known attacks)
@@ -72,9 +73,7 @@ You have different options `ip`, `name`, and `coordinates`
 
 #### Plotting data (functions)
 ```js
-raven.add_marker_by_name()          //Plot info by country or city name
-raven.add_marker_by_ip()            //Plot data by IP address
-raven.add_marker_by_coordinates()   //Plot data by coordinates
+raven.add_marker_by_gussing()       //Plot info by country or city name, ip or coordinates
 
 marker_object                       //An object {'from':'','to':""} see examples
 colors_object                       //An object {'line: {'from': ''#FF0000','to': 'FF0000'}} this the color of the line between 2 points - (if null, then a random color will be picked)
@@ -84,16 +83,16 @@ options = []                        //A list of options such as animation marker
 
 #### Plotting data (As line, from -> to)
 ```js
-raven.add_marker_by_name({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line'])
-raven.add_marker_by_ip({'from':'0.0.0.0','to':'0.0.0.0:53'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line'])
-raven.add_marker_by_coordinates({'from':'-11.074920,-51.648929','to':'51.464957,-107.583864'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line'])
+raven.add_marker_by_gussing({'from':'seattle,wa,us','to':'8.8.8.8'},{'line':{'from':null,'to':null}},2000,['line'])
+raven.add_marker_by_gussing({'from':'-11.074920,-51.648929','to':'0.0.0.0:53'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line'])
+raven.add_marker_by_gussing({'from':'-11.074920,-51.648929','to':'us'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line'])
 ```
 
 #### Plotting data (As point)
 ```js
-raven.add_marker_by_name({'from':'portland,or,us','to':null},{'line':{'from':null,'to':null}},2000,['point'])
-raven.add_marker_by_ip({'from':'8.8.8.8','to':null},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['point'])
-raven.add_marker_by_coordinates({'from':'-11.074920,-51.648929','to':null},{'line':{'from':null,'to':'#FFFF00'}},1000,['point'])
+raven.add_marker_by_gussing({'from':'portland,or,us','to':null},{'line':{'from':null,'to':null}},2000,['point'])
+raven.add_marker_by_gussing({'from':'8.8.8.8','to':null},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['point'])
+raven.add_marker_by_gussing({'from':'-11.074920,-51.648929','to':null},{'line':{'from':null,'to':'#FFFF00'}},1000,['point'])
 ```
 
 #### Plotting data + adding it to the output table (function)
@@ -109,16 +108,16 @@ options = []                        //A list of options such as animation marker
 
 #### Plotting data + adding it to the output table (As line, from -> to)
 ```js
-raven.add_to_data_to_table({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
-raven.add_to_data_to_table({'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
-raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':'51.464957,-107.583864'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
+raven.add_to_data_to_table({'from':'8.8.8.8','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
+raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
+raven.add_to_data_to_table({'from':'br','to':'51.464957,-107.583864'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
 ```
 
 #### Plotting data + adding it to the output table (As point)
 ```js
-raven.add_to_data_to_table({'from':'seattle,wa,us','to':'delhi,in'},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
-raven.add_to_data_to_table({'from':'0.0.0.0','to':'0.0.0.0:3389'},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
-raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':'51.464957,-107.583864'},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
+raven.add_to_data_to_table({'from':'seattle,wa,us','to':null},{'line':{'from':null,'to':null}},2000,['line','multi-output','single-output'])
+raven.add_to_data_to_table({'from':'0.0.0.0','to':null},{'line':{'from':'#FF0000','to':'#FF0000'}},1000,['line','multi-output'])
+raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':null},{'line':{'from':null,'to':'#FFFF00'}},1000,['line','single-output'])
 ```
 
 ## Method 2 - Embed it, and use websocket for plotting
@@ -168,7 +167,7 @@ raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':'51.464957,-107.
       "method": "ip",
       "object": {
         "from": "0.0.0.0",
-        "to": "0.0.0.0"
+        "to": "us"
       },
       "color": {
         "line": {
@@ -191,7 +190,7 @@ raven.add_to_data_to_table({'from':'-11.074920,-51.648929','to':'51.464957,-107.
     {
     "function":"table",
       "object": {
-        "from": "us",
+        "from": "-11.074920,-51.648929",
         "to": "br"
       },
       "color": {

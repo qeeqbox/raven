@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: change_me_user
+      MYSQL_PASSWORD: change_me_pass
+      MYSQL_ROOT_PASSWORD: change_me_root_pass
+    ports:
+      - "3306:3306"
+    expose:
+      - 33076

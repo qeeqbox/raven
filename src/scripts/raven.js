@@ -187,10 +187,10 @@ class qb_raven_map {
         this.qb_ports_codes = qb_ports_codes,
         this.qb_ips_codes = qb_ips_codes
       ]).then(() => {
-        if (this.qb_countries_codes && qb_ips_codes && this.qb_world_countries) {
+        if (this.qb_countries_codes && this.qb_world_countries) {
           this.draw()
         } else {
-          this.verbose && console.log('qb_world_countries, this.qb_world_cities, this.qb_countries_codes, and qb_ips_codes modules are needed')
+          this.verbose && console.log('qb_world_countries and qb_countries_codes modules are needed')
         }
       })
       .catch(error => this.verbose && console.log(error));
@@ -227,9 +227,6 @@ class qb_raven_map {
             if (dobule_check.sort().toString() == filtered.sort().toString()) {
               if (this.disable.includes('qb_companies_codes')) {
                 window['qb_companies_codes'] = []
-              }
-              if (this.disable.includes('qb_countries_codes')) {
-                window['qb_countries_codes'] = {}
               }
               if (this.disable.includes('qb_ips_codes')) {
                 window['qb_private_ips_codes'] = []
@@ -321,7 +318,7 @@ class qb_raven_map {
           return_info['i'] = is_private.i
           return [null, return_info]
         } else {
-          target_country = this.filter_by_ip(qb_ips_codes, ip_address_and_port[0])
+          target_country = this.filter_by_ip(this.qb_ips_codes, ip_address_and_port[0])
           temp_ip_info = this.filter_by_ip_with_info(this.qb_companies_codes, ip_address_and_port[0])
           if (target_country && typeof target_country === 'object') {
             target_country = this.qb_world_countries.find(obj => {
@@ -387,15 +384,17 @@ class qb_raven_map {
     return [null, null]
   }
 
-  add_marker_by_name(marker_object, colors_object = {}, timeout = 5000, options = []) {
+  add_marker_by_gussing(marker_object, colors_object = {}, timeout = 5000, options = []) {
     const time_temp = this.current_time()
     const temp_colors_object = JSON.parse(JSON.stringify(colors_object))
+    let temp_ip_info = []
     let temp_line_name = null
-    const return_info = {
-      from: null,
-      to: null,
+    let return_info = {
+      from: marker_object.from,
+      to: marker_object.to,
       active: false,
-      method: '',
+      from_method: '',
+      to_method: '',
       from_result: false,
       to_result: false,
       time: time_temp
@@ -406,36 +405,11 @@ class qb_raven_map {
     }
     try {
       for (const item of ['from', 'to']) {
-        if (marker_object[item]) {
-          if (marker_object[item].indexOf(',') == -1) {
-            if (marker_object[item] in this.qb_countries_codes) {
-              temp_marker_object[item] = this.qb_countries_codes[marker_object[item]]
-              return_info[item] = temp_marker_object[item]
-              temp_marker_object[item] = this.qb_world_countries.find(obj => obj.properties.cc === temp_marker_object[item].cc)
-              temp_marker_object[item] = d3.geoCentroid(temp_marker_object[item])
-              temp_marker_object[item] = {
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: [temp_marker_object[item][0], temp_marker_object[item][1]]
-                }
-              }
-              return_info[item + '_method'] = 'country'
-            }
-          } else if (marker_object[item] in this.qb_world_cities) {
-            temp_marker_object[item] = this.qb_world_cities[marker_object[item]]
-            if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item] !== null) {
-              if (temp_marker_object[item].properties.cc in this.qb_countries_codes) {
-                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].properties.cc]))
-              }
-
-              return_info[item].c = temp_marker_object[item].properties.n
-            }
-          } else {
-            temp_marker_object[item] = marker_object[item].split(',')
-            if (temp_marker_object[item].length === 2) {
-              if (temp_marker_object[item][1] in this.qb_countries_codes) {
-                temp_marker_object[item] = this.qb_countries_codes[temp_marker_object[item][1]]
+        if (typeof(marker_object[item]) === 'string' || object.from instanceof String){
+          if (!marker_object[item].match(/\d/) && Object.keys(this.qb_countries_codes).length > 0 && Object.keys(this.qb_world_countries).length > 0){
+            if (marker_object[item].indexOf(',') == -1) {
+              if (marker_object[item] in this.qb_countries_codes) {
+                temp_marker_object[item] = this.qb_countries_codes[marker_object[item]]
                 return_info[item] = temp_marker_object[item]
                 temp_marker_object[item] = this.qb_world_countries.find(obj => obj.properties.cc === temp_marker_object[item].cc)
                 temp_marker_object[item] = d3.geoCentroid(temp_marker_object[item])
@@ -446,142 +420,115 @@ class qb_raven_map {
                     coordinates: [temp_marker_object[item][0], temp_marker_object[item][1]]
                   }
                 }
-                return_info[item + '_method'] = 'country'
+              }
+            } else if (Object.keys(this.qb_world_cities).length > 0 && marker_object[item] in this.qb_world_cities) {
+              temp_marker_object[item] = this.qb_world_cities[marker_object[item]]
+              if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item] !== null) {
+                if (temp_marker_object[item].properties.cc in this.qb_countries_codes) {
+                  return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].properties.cc]))
+                }
+
+                return_info[item].c = temp_marker_object[item].properties.n
+              }
+            } else {
+              temp_marker_object[item] = marker_object[item].split(',')
+              if (temp_marker_object[item].length === 2) {
+                if (temp_marker_object[item][1] in this.qb_countries_codes) {
+                  temp_marker_object[item] = this.qb_countries_codes[temp_marker_object[item][1]]
+                  return_info[item] = temp_marker_object[item]
+                  temp_marker_object[item] = this.qb_world_countries.find(obj => obj.properties.cc === temp_marker_object[item].cc)
+                  temp_marker_object[item] = d3.geoCentroid(temp_marker_object[item])
+                  temp_marker_object[item] = {
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [temp_marker_object[item][0], temp_marker_object[item][1]]
+                    }
+                  }
+                }
               }
             }
-          }
-        }
-      }
 
-      if (options.includes('line')) {
-        if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
-          if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
-            return_info.from_result = true
+            return_info[item + '_method'] = 'name'
           }
-        }
-        if (this.get_nested_value(temp_marker_object, 'to', 'geometry', 'coordinates')) {
-          if (!temp_marker_object.to.geometry.coordinates.includes(NaN)) {
-            return_info.to_result = true
-          }
-        }
-        if (return_info.from_result && return_info.to_result) {
+          else if (marker_object[item].match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) && this.qb_private_ips_codes.length > 0 && this.qb_ips_codes.length > 0 && this.qb_companies_codes.length > 0 && Object.keys(this.qb_countries_codes).length > 0 && this.qb_ports_codes.length > 0 && Object.keys(this.qb_world_countries).length > 0){
+            let ip_address_and_port = marker_object[item].split(':')
+            temp_marker_object[item] = this.filter_by_ip(this.qb_ips_codes, ip_address_and_port[0])
+            temp_ip_info = this.filter_by_ip_with_info(this.qb_companies_codes, ip_address_and_port[0])
+            let is_private = this.filter_by_ip(this.qb_private_ips_codes, ip_address_and_port[0])
+            if (is_private && typeof is_private === 'object') {
+              return_info[item] = {
+                'ip': marker_object.from
+              }
+              if (ip_address_and_port.length === 2) {
+                ip_address_and_port[1] = parseInt(ip_address_and_port[1])
+                let results = JSON.parse(JSON.stringify(this.qb_ports_codes.find(item => item.p === ip_address_and_port[1])))
+                if (results && typeof results === 'object') {
+                  return_info[item]['p'] = results
+                }
+              }
+              return_info[item]['i'] = is_private.i
+            } else {
+              if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item]) {
+                if (temp_marker_object[item].cc in this.qb_countries_codes) {
+                  return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].cc]))
 
-          // temp_line_name = JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
-          temp_line_name = time_temp + '-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
-          if (!this.markers_queue.includes(temp_line_name)) {
-            if (temp_colors_object.line.from === null) {
-              temp_colors_object.line.from = this.random_bg_color()
+
+                  if (temp_ip_info && typeof temp_ip_info === 'object') {
+                    return_info[item].co = temp_ip_info.info
+                  }
+
+                  if (ip_address_and_port.length === 2) {
+                    ip_address_and_port[1] = parseInt(ip_address_and_port[1])
+                    let results = this.qb_ports_codes.find(item => item.p === ip_address_and_port[1])
+                    if (results && typeof results === 'object') {
+                      return_info[item].p = results
+                    }
+                  }
+
+                  return_info[item].ip = marker_object[item]
+                  temp_marker_object[item] = this.qb_world_countries.find(obj => obj.properties.cc === temp_marker_object[item].cc)
+                  temp_marker_object[item] = d3.geoCentroid(temp_marker_object[item])
+                  temp_marker_object[item] = {
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [temp_marker_object[item][0], temp_marker_object[item][1]]
+                    }
+                  }
+                }
+              }
             }
-            if (temp_colors_object.line.to === null) {
-              temp_colors_object.line.to = this.random_bg_color()
+
+            return_info[item + '_method'] = 'ip'
+          }
+          else if (marker_object[item].match(/([0-9.-]+).+?([0-9.-]+)/) && Object.keys(this.qb_countries_codes).length > 0){
+            marker_object[item] = marker_object[item].split(",")
+            if (options.includes('country-by-coordinate')) {
+              let country = this.get_country_by_coordinate(marker_object[item][0], marker_object[item][1])
+              if (country !== undefined) {
+                if (country in this.qb_countries_codes) {
+                  return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[country]))
+                }
+              }
             }
-            this.draw_line_mark(temp_marker_object.from, temp_marker_object.to, temp_colors_object.line.from, temp_colors_object.line.to, timeout, temp_line_name)
-            return_info.active = true
-          }
-        }
-      } else if (options.includes('point')) {
-        if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
-          if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
-            return_info.from_result = true
-          }
-        }
-        if (return_info.from_result) {
-          // temp_line_name = JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
-          temp_line_name = time_temp + '-point-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry])
-          if (!this.markers_queue.includes(temp_line_name)) {
-            if (temp_colors_object.line.from === null) {
-              temp_colors_object.line.from = this.random_bg_color()
+
+            temp_marker_object[item] = {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [marker_object[item][1], marker_object[item][0]]
+              }
             }
-            this.draw_point_mark(temp_marker_object.from, temp_colors_object.line.from, timeout, temp_line_name)
-            return_info.active = true
-          }
-        }
-      }
 
-    } catch (err) {
-      this.verbose && console.log(err)
-    }
-
-    if (!return_info.from_result) {
-      return_info.from = marker_object.from
-    }
-
-    if (!return_info.to_result) {
-      return_info.to = marker_object.to
-    }
-
-    return return_info
-  }
-
-  add_marker_by_ip(marker_object, colors_object = {}, timeout = 5000, options = []) {
-    const time_temp = this.current_time()
-    const temp_colors_object = JSON.parse(JSON.stringify(colors_object))
-    let temp_ip_info = []
-    let temp_line_name = null
-    let return_info = {
-      from: marker_object.from,
-      to: marker_object.to,
-      active: false,
-      method: 'ip',
-      from_result: false,
-      to_result: false,
-      time: time_temp
-    }
-    const temp_marker_object = {
-      from: null,
-      to: null
-    }
-    try {
-      for (const item of ['from', 'to']) {
-        if (marker_object[item]) {
-          let ip_address_and_port = marker_object[item].split(':')
-          temp_marker_object[item] = this.filter_by_ip(qb_ips_codes, ip_address_and_port[0])
-          temp_ip_info = this.filter_by_ip_with_info(this.qb_companies_codes, ip_address_and_port[0])
-          let is_private = this.filter_by_ip(this.qb_private_ips_codes, ip_address_and_port[0])
-          if (is_private && typeof is_private === 'object') {
             return_info[item] = {
-              'ip': marker_object.from
+              coordinates: [marker_object[item][1], marker_object[item][0]]
             }
-            if (ip_address_and_port.length === 2) {
-              ip_address_and_port[1] = parseInt(ip_address_and_port[1])
-              let results = JSON.parse(JSON.stringify(this.qb_ports_codes.find(item => item.p === ip_address_and_port[1])))
-              if (results && typeof results === 'object') {
-                return_info[item]['p'] = results
-              }
-            }
-            return_info[item]['i'] = is_private.i
-          } else {
-            if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item]) {
-              if (temp_marker_object[item].cc in this.qb_countries_codes) {
-                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].cc]))
 
+            return_info[item + '_method'] = 'coordinates'
 
-                if (temp_ip_info && typeof temp_ip_info === 'object') {
-                  return_info[item].co = temp_ip_info.info
-                }
-
-                if (ip_address_and_port.length === 2) {
-                  ip_address_and_port[1] = parseInt(ip_address_and_port[1])
-                  let results = this.qb_ports_codes.find(item => item.p === ip_address_and_port[1])
-                  if (results && typeof results === 'object') {
-                    return_info[item].p = results
-                  }
-                }
-
-                return_info[item].ip = marker_object[item]
-                temp_marker_object[item] = this.qb_world_countries.find(obj => obj.properties.cc === temp_marker_object[item].cc)
-                temp_marker_object[item] = d3.geoCentroid(temp_marker_object[item])
-                temp_marker_object[item] = {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [temp_marker_object[item][0], temp_marker_object[item][1]]
-                  }
-                }
-              }
-            }
           }
-        }
+        } 
       }
 
       if (options.includes('line')) {
@@ -637,109 +584,6 @@ class qb_raven_map {
           }
         }
       }
-    } catch (err) {
-      this.verbose && console.log(err)
-    }
-
-    if (!return_info.from_result) {
-      return_info.from = marker_object.from
-    }
-
-    if (!return_info.to_result) {
-      return_info.to = marker_object.to
-    }
-
-    return return_info
-  }
-
-  add_marker_by_coordinates(marker_object, colors_object = {}, timeout = 5000, options = []) {
-    const time_temp = this.current_time()
-    const temp_colors_object = JSON.parse(JSON.stringify(colors_object))
-    let temp_line_name = null
-    const return_info = {
-      from: null,
-      to: null,
-      active: false,
-      method: 'coordinates',
-      time: time_temp
-    }
-    const temp_marker_object = {
-      from: null,
-      to: null
-    }
-    try {
-      for (const item of ['from', 'to']) {
-        if (marker_object[item]) {
-          marker_object[item] = marker_object[item].split(",")
-          if (options.includes('country-by-coordinate')) {
-            let country = this.get_country_by_coordinate(marker_object[item][0], marker_object[item][1])
-            if (country !== undefined) {
-              if (country in this.qb_countries_codes) {
-                return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[country]))
-              }
-            }
-          }
-
-          temp_marker_object[item] = {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [marker_object[item][1], marker_object[item][0]]
-            }
-          }
-
-          if (return_info[item] == null) {
-            return_info[item] = {
-              coordinates: [marker_object[item][1], marker_object[item][0]]
-            }
-          } else {
-            return_info[item]['coordinates'] = [marker_object[item][1], marker_object[item][0]]
-          }
-        }
-      }
-
-      if (options.includes('line')) {
-        if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
-          if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
-            return_info.from_result = true
-          }
-        }
-        if (this.get_nested_value(temp_marker_object, 'to', 'geometry', 'coordinates')) {
-          if (!temp_marker_object.to.geometry.coordinates.includes(NaN)) {
-            return_info.to_result = true
-          }
-        }
-        if (return_info.from_result && return_info.to_result) {
-          temp_line_name = time_temp + '-line-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry, temp_marker_object.to.geometry])
-          if (!this.markers_queue.includes(temp_line_name)) {
-            if (temp_colors_object.line.from === null) {
-              temp_colors_object.line.from = this.random_bg_color()
-            }
-            if (temp_colors_object.line.to === null) {
-              temp_colors_object.line.to = this.random_bg_color()
-            }
-            this.draw_line_mark(temp_marker_object.from, temp_marker_object.to, temp_colors_object.line.from, temp_colors_object.line.to, timeout, temp_line_name)
-            return_info.active = true
-          }
-        }
-      } else if (options.includes('point')) {
-        if (this.get_nested_value(temp_marker_object, 'from', 'geometry', 'coordinates')) {
-          if (!temp_marker_object.from.geometry.coordinates.includes(NaN)) {
-            return_info.from_result = true
-          }
-        }
-        if (return_info.from_result) {
-          temp_line_name = time_temp + '-point-' + return_info.method + JSON.stringify([temp_marker_object.from.geometry])
-          if (!this.markers_queue.includes(temp_line_name)) {
-            if (temp_colors_object.line.from === null) {
-              temp_colors_object.line.from = this.random_bg_color()
-            }
-            this.draw_point_mark(temp_marker_object.from, temp_colors_object.line.from, timeout, temp_line_name)
-            return_info.active = true
-          }
-        }
-      }
-
     } catch (err) {
       this.verbose && console.log(err)
     }
@@ -1507,17 +1351,8 @@ class qb_raven_map {
     let ret_value = false
     let attack_event = {}
     try {
-      if (typeof(object.from) === 'string' || object.from instanceof String){
-        if (object.from.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) && object.to.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)){
-          attack_event = this.add_marker_by_ip(object, color, timeout, options)
-        }
-        else if (!object.from.match(/\d/) && !object.to.match(/\d/)){
-          attack_event = this.add_marker_by_name(object, color, timeout, options)
-        }
-        else if (object.from.match(/([0-9.-]+).+?([0-9.-]+)/) && object.to.match(/([0-9.-]+).+?([0-9.-]+)/)){
-          attack_event = this.add_marker_by_coordinates(object, color, timeout, options)
-        }
-      }
+
+      attack_event = this.add_marker_by_gussing(object, color, timeout, options)
 
       if ('active' in attack_event) {
         if (attack_event.from_result || attack_event.to_result) {
@@ -1648,18 +1483,9 @@ class qb_raven_map {
               if (item['function'] == 'table') {
                 this.add_to_data_to_table(item['object'], item['color'], item['timeout'], item['options'], item['custom'])
               } else if (item['function'] == 'marker') {
+                  
+                this.add_marker_by_gussing(item['object'], item['color'], item['timeout'], item['options'])
 
-                if (typeof(item['object'].from) === 'string' || item['object'].from instanceof String){
-                  if (item['object'].from.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) && item['object'].to.match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)){
-                    this.add_marker_by_ip(item['object'], item['color'], item['timeout'], item['options'])
-                  }
-                  else if (!item['object'].from.match(/\d/) && !item['object'].to.match(/\d/)){
-                    this.add_marker_by_name(item['object'], item['color'], item['timeout'], item['options'])
-                  }
-                  else if (item['object'].from.match(/([0-9.-]+).+?([0-9.-]+)/) && item['object'].to.match(/([0-9.-]+).+?([0-9.-]+)/)){
-                    this.add_marker_by_coordinates(item['object'], item['color'], item['timeout'], item['options'])
-                  }
-                }
               }
             });
           } catch (err) {
@@ -1697,10 +1523,10 @@ class qb_raven_map {
         const random_value = type_of_data[Math.floor(Math.random() * type_of_data_length)]
         const temp_color = this.random_bg_color()
         if (random_value === 'Countries') {
-          from = '0,' + this.qb_world_countries[Math.floor(Math.random() * max_len_world_countries)].properties.cc
-          to = '0,' + this.qb_world_countries[Math.floor(Math.random() * max_len_world_countries)].properties.cc
+          from = this.qb_world_countries[Math.floor(Math.random() * max_len_world_countries)].properties.cc
+          to = this.qb_world_countries[Math.floor(Math.random() * max_len_world_countries)].properties.cc
           if (from && to && from !== to && !from.includes('-99') && !to.includes('-99')) {
-            this.add_to_data_to_table('name', {
+            this.add_to_data_to_table({
               from: from,
               to: to,
             }, {
@@ -1718,7 +1544,7 @@ class qb_raven_map {
           const from = Object.keys(this.qb_world_cities)[Math.floor(Math.random() * max_len_world_cities)]
           const to = Object.keys(this.qb_world_cities)[Math.floor(Math.random() * max_len_world_cities)]
           if (from && to && from !== to) {
-            this.add_to_data_to_table('name', {
+            this.add_to_data_to_table({
               from: from,
               to: to
             }, {
@@ -1739,7 +1565,7 @@ class qb_raven_map {
           from = temp_from.join('.')
           to = temp_to.join('.')
           if (from && to && from !== to) {
-            this.add_to_data_to_table('ip', {
+            this.add_to_data_to_table({
               from: from,
               to: to + ':' + port
             }, {
@@ -1757,7 +1583,7 @@ class qb_raven_map {
           from = [Math.random() * 360 - 180, Math.random() * 360 - 180]
           to = [Math.random() * 360 - 180, Math.random() * 360 - 180]
           if (from && to && from !== to) {
-            this.add_to_data_to_table('coordinates', {
+            this.add_to_data_to_table({
               from: from,
               to: to
             }, {
