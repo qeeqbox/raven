@@ -1,0 +1,5 @@
+FROM python:3.7
+WORKDIR /usr/app/src
+COPY . ./
+RUN pip3 install websockets asyncio mysql-connector
+CMD ["sh","-c","echo http://localhost:8080/simulation.html && python mysql_simulation.py"]

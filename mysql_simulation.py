@@ -24,7 +24,7 @@ WEBSOCKETS = set()
 def create_db():
 	def random_ip():
 		return ".".join(map(str, (randint(0, 255) for number in range(4))))
-	conn = connect(host= "localhost",user= "change_me_user", password = "change_me_pass",autocommit=True)
+	conn = connect(host= "db",user= "change_me_user", password = "change_me_pass",autocommit=True)
 	cursor = conn.cursor()
 	cursor.execute("""DROP DATABASE IF EXISTS testdb""")
 	cursor.execute("""CREATE DATABASE IF NOT EXISTS testdb""")
@@ -79,7 +79,7 @@ async def http_task(path, headers):
 async def websoket_task(websocket, path):
 	WEBSOCKETS.add(websocket)
 	timestamp = datetime.now()
-	conn = connect(host= "localhost",user= "change_me_user", password = "change_me_pass",autocommit=True)
+	conn = connect(host= "db",user= "change_me_user", password = "change_me_pass",autocommit=True)
 	cursor = conn.cursor()
 	cursor.execute("""USE testdb""")
 	while True:
