@@ -25,7 +25,7 @@ from websockets import serve
 from random import choice
 from json import dumps
 from sys import argv
-from random import randint
+from random import randint, uniform
 
 IP = '0.0.0.0'
 WEBSOCKET_PORT = 5678
@@ -41,8 +41,8 @@ def dummy_request(loop, function=""):
         parameters = {
     "function":function,
       "object": {
-        "from": "{}".format(dummy_ip()),
-        "to": "{}:3389".format(dummy_ip())
+        "from": "{},{}".format(uniform(-90, 90), uniform(-180,180)),
+        "to": "{},{}".format(uniform(-90, 90), uniform(-180,180))
       },
       "color": {
         "line": {
@@ -50,11 +50,11 @@ def dummy_request(loop, function=""):
           "to": "#{:06x}".format(randint(255, 16777216))
         }
       },
-      "timeout": 1000,
+      "timeout": 2000,
       "options": [
         "line",
-        "single-output",
-        "multi-output"
+        "multi-output",
+        "country-by-coordinate"
       ]
     }
 
@@ -109,13 +109,13 @@ async def websoket_task(websocket, path):
             data_to_send = None
             try:
                 if argv[1] == "table":
-                    data_to_send = dummy_request(randint(10,50), "table")
+                    data_to_send = dummy_request(randint(100,100), "table")
             except:
                 pass
             if not data_to_send:
-                data_to_send = dummy_request(randint(10,50), "marker")
+                data_to_send = dummy_request(randint(100,100), "marker")
             await gather(*[ws.send(data_to_send) for ws in WEBSOCKETS],return_exceptions=False)
-            await asleep(randint(1,2))
+            await asleep(randint(4,4))
     except Exception as e:
         pass
     finally:
@@ -126,7 +126,7 @@ async def main():
     await serve(lambda x: None, IP, HTTP_PORT, process_request=http_task)
     try:
         while True:
-            await asleep(0.1)
+            await asleep(0.2)
     except KeyboardInterrupt:
         exit()
 

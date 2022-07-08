@@ -51,9 +51,10 @@
         'global_timeout': 2000,
         'global_stats_limit': 10,
         'db_length': 1000,
+        'live_attacks_limit':50,
         'location': 'scripts',
-        'panels': ['single-output'],
-        'disable': ['multi-output','tooltip', 'random', 'insert','taskbar','move_to_country'],
+        'panels': ['multi-output','taskbar'],
+        'disable': ['tooltip', 'random', 'insert','move_to_country','qb_world_cities','qb_ips_codes','qb_companies_codes','qb_ports_codes'],
         'websocket':{'server':'ws://'+window.location.hostname+':5678',
                       'request_timeout':3000},
         'verbose': true
@@ -63,7 +64,6 @@
       window['raven'].init_all(raven_options)
       window['raven'].init_world()
       window['raven'].fetch_data_from_server()
-      //'disable': ['multi-output', 'single-output','tooltip', 'random', 'insert','taskbar','move_to_country'],
 
     });
 
