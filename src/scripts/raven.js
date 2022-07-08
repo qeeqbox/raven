@@ -34,6 +34,7 @@ class qb_raven_map {
     this.global_timeout = options.global_timeout
     this.global_stats_limit = options.global_stats_limit
     this.db_length = options.db_length
+    this.live_attacks_limit = options.live_attacks_limit
     this.location = options.location
     this.panels = options.panels
     this.disable = options.disable
@@ -1273,7 +1274,7 @@ class qb_raven_map {
           }
           //need to change for single
           if (options.includes('multi-output')) {
-            if ($('#raven-multi-output-panel-body-table').children().length > 10) {
+            if ($('#raven-multi-output-panel-body-table').children().length > this.live_attacks_limit) {
               $('#raven-multi-output-panel-body-table .country-row:first').remove()
             }
           }
