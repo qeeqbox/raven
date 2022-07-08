@@ -347,7 +347,7 @@ class qb_raven_map {
       }
 
       if (typeof target_country !== 'undefined' && 'type' in target_country) {
-        if (method !== 'detect') {
+        if (method !== 'detect_222') {
           this.get_db_stats(target_country.properties.cc, stats_limit)
           $('#raven-tooltip-panel').dialog('open')
         }
@@ -425,6 +425,7 @@ class qb_raven_map {
               temp_marker_object[item] = this.qb_world_cities[marker_object[item]]
               if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item] !== null) {
                 if (temp_marker_object[item].properties.cc in this.qb_countries_codes) {
+                  delete return_info[item]
                   return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].properties.cc]))
                 }
 
@@ -471,8 +472,8 @@ class qb_raven_map {
             } else {
               if (typeof temp_marker_object[item] === 'object' && temp_marker_object[item]) {
                 if (temp_marker_object[item].cc in this.qb_countries_codes) {
+                  delete return_info[item]
                   return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[temp_marker_object[item].cc]))
-
 
                   if (temp_ip_info && typeof temp_ip_info === 'object') {
                     return_info[item].co = temp_ip_info.info
@@ -508,6 +509,7 @@ class qb_raven_map {
               let country = this.get_country_by_coordinate(marker_object[item][0], marker_object[item][1])
               if (country !== undefined) {
                 if (country in this.qb_countries_codes) {
+                  delete return_info[item]
                   return_info[item] = JSON.parse(JSON.stringify(this.qb_countries_codes[country]))
                 }
               }
@@ -521,8 +523,10 @@ class qb_raven_map {
               }
             }
 
+            if (typeof return_info[item] === 'string') {
             return_info[item] = {
               coordinates: [marker_object[item][1], marker_object[item][0]]
+            }
             }
 
             return_info[item + '_method'] = 'coordinates'
@@ -1245,106 +1249,6 @@ class qb_raven_map {
       this.db.shift()
     }
     this.db.push(row)
-  }
-
-  get_db_stats(cc, stats_limit) {
-    $('#raven-tooltip-table-wrapper.targets').html('')
-    $('#raven-tooltip-table-wrapper.origins').html('')
-    let result = this.db.filter(item => item.includes(cc))
-    const sorted_results = {
-      targets: [],
-      origins: []
-    }
-
-    if (result.length > 0) {
-      result = this.db.reduce(function(x, y) {
-        x[y] = (x[y] || 0) + 1
-        return x
-      }, {})
-
-      result = Object.entries(result).sort(function(a, b) {
-        return b[1] - a[1]
-      })
-      result.forEach((item) => {
-        const attack_event = item[0].split(',')
-        if (attack_event[0] === cc) {
-          if (sorted_results.targets.length < stats_limit) {
-            if (attack_event[0] in this.qb_countries_codes) {
-              sorted_results.targets.push({
-                count: item[1],
-                n: this.qb_countries_codes[attack_event[1]].n,
-                f: this.qb_countries_codes[attack_event[1]].f
-              })
-            }
-          }
-        }
-        if (attack_event[1] === cc) {
-          if (sorted_results.origins.length < stats_limit) {
-            if (attack_event[1] in this.qb_countries_codes) {
-              sorted_results.origins.push({
-                count: item[1],
-                n: this.qb_countries_codes[attack_event[0]].n,
-                f: this.qb_countries_codes[attack_event[0]].f
-              })
-            }
-          }
-        }
-      });
-
-      ['targets', 'origins'].forEach((_type) => {
-        if (_type === 'targets') {
-          $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-header"> Top (' + stats_limit + ') attacks from ' + cc.toUpperCase() + ' to ?</div>')
-        } else {
-          $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-header"> Top (' + stats_limit + ') attacks from ? to ' + cc.toUpperCase() + '</div>')
-        }
-
-        sorted_results[_type].forEach((attack_event) => {
-          const temp_item = {
-            flag: this.unknown_flag,
-            info: []
-          }
-
-          if ('f' in attack_event) {
-            if (attack_event.f !== '') {
-              temp_item.flag = '<img src="data:image/png;base64,' + attack_event.f + '"/>'
-            }
-          }
-          if ('ip' in attack_event) {
-            if (attack_event.ip !== '') {
-              temp_item.info.push('IP: ' + attack_event.ip)
-            }
-          }
-          if ('p' in attack_event) {
-            temp_item.info.push('Port info: ' + attack_event.p.n + ' ' + attack_event.p.p + '/' + attack_event.p.t)
-          }
-          if ('co' in attack_event) {
-            if (attack_event.co !== '') {
-              temp_item.info.push('Whois: ' + attack_event.co)
-            }
-          }
-          if ('c' in attack_event) {
-            if (attack_event.c !== '') {
-              temp_item.info.push('City: ' + attack_event.c)
-            }
-          }
-          if ('n' in attack_event) {
-            if (attack_event.n !== '') {
-              temp_item.info.push('Country: ' + attack_event.n)
-            }
-          }
-
-          $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-row"><div class="country-count">' + attack_event.count + '</div><div class="country-flag">' + temp_item.flag + '</div><div class="country-info">' + temp_item.info.join('<br>') + '</div></div>')
-        })
-      })
-    } else {
-      ['targets', 'origins'].forEach((_type) => {
-        if (_type === 'targets') {
-          $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-country"> There are no attacks from ' + cc.toUpperCase() + ' to ?</div>')
-        } else {
-          $('#raven-tooltip-table-wrapper.' + _type).append('<div class="country-country"> There are no attacks from ? to ' + cc.toUpperCase() + '</div>')
-        }
-      })
-    }
   }
 
   add_to_data_to_table(object, color, timeout, options = [], custom = null) {
