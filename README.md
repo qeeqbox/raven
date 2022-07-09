@@ -8,6 +8,9 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
 ## Offline - Demo [Firefox, Chrome or Safari]
 <img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/intro.gif" style="max-width:768px"/>
 
+## Live - Regression 500 attacks at once [Firefox, Chrome or Safari]
+<img src="https://raw.githubusercontent.com/qeeqbox/raven/main/readme/regression.gif" style="max-width:768px"/>
+
 ## Live - Demo [Firefox, Chrome or Safari]
 [https://qeeqbox.github.io/raven/](https://qeeqbox.github.io/raven/index.html)
 
@@ -25,6 +28,7 @@ Raven - Advanced Cyber Threat Map (Simplified, customizable and responsive. It u
 - Random simulation (IP, country, city)
 - Can be used online or offline (Static)
 - Theme picker module
+- Handles large number of attacks
 
 ## Data
 You have different options `ip`, `name`, and `coordinates`
