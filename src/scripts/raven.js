@@ -1264,11 +1264,11 @@ class qb_raven_map {
           const action = '⮕'
           const temp_item = {
             from: {
-              flag: this.unknown_flag,
+              flag: '?',
               info: []
             },
             to: {
-              flag: this.unknown_flag,
+              flag: '?',
               info: []
             }
           }
@@ -1284,7 +1284,7 @@ class qb_raven_map {
             if (typeof attack_event[item] === 'object' && attack_event[item] !== null) {
               if ('f' in attack_event[item]) {
                 if (attack_event[item].f !== '') {
-                  temp_item[item].flag = '<img src="data:image/png;base64,' + attack_event[item].f + '"/>'
+                  temp_item[item].flag = attack_event[item].f
                 }
               }
               if (custom) {
