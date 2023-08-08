@@ -230,10 +230,5 @@ Then, go to http://localhost:8080/simulation.html
 - The dark gray style is typical in my projects (You can change that if you want)
 - If you need help improving your world map or cyber threat map, reach out, and I might be able to help you!
 
-## Links
-- [13 Top Cyber Threats Live Maps by medevel](https://medevel.com/13-cyber-threats-live-maps/) 
-- [kitploit](https://www.kitploit.com/2022/01/raven-advanced-cyber-threat-map.html)
-- [cryptron.ch](https://www.cryptron.ch/files/Cryptron/cybermap/index.html)
-
 ## Other Projects
 [![](https://github.com/qeeqbox/.github/blob/main/data/analyzer.png)](https://github.com/qeeqbox/analyzer) [![](https://github.com/qeeqbox/.github/blob/main/data/chameleon.png)](https://github.com/qeeqbox/chameleon) [![](https://github.com/qeeqbox/.github/blob/main/data/honeypots.png)](https://github.com/qeeqbox/honeypots) [![](https://github.com/qeeqbox/.github/blob/main/data/osint.png)](https://github.com/qeeqbox/osint) [![](https://github.com/qeeqbox/.github/blob/main/data/url-sandbox.png)](https://github.com/qeeqbox/url-sandbox) [![](https://github.com/qeeqbox/.github/blob/main/data/mitre-visualizer.png)](https://github.com/qeeqbox/mitre-visualizer) [![](https://github.com/qeeqbox/.github/blob/main/data/woodpecker.png)](https://github.com/qeeqbox/woodpecker) [![](https://github.com/qeeqbox/.github/blob/main/data/docker-images.png)](https://github.com/qeeqbox/docker-images) [![](https://github.com/qeeqbox/.github/blob/main/data/seahorse.png)](https://github.com/qeeqbox/seahorse) [![](https://github.com/qeeqbox/.github/blob/main/data/rhino.png)](https://github.com/qeeqbox/rhino)
